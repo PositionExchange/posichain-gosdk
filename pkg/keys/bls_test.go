@@ -42,14 +42,14 @@ func TestBlsKeyGeneration(t *testing.T) {
 
 func TestMultiBlsKeyGeneration(t *testing.T) {
 	tests := []struct {
-		node     string
-		count    uint32
-		shardID  uint32
-		filePath string
-		expected bool
+		count      uint32
+		shardID    uint32
+		shardCount int
+		filePath   string
+		expected   bool
 	}{
-		{node: "https://api.s0.b.hmny.io", count: 3, shardID: 0, expected: true},
-		{node: "https://api.s0.b.hmny.io", count: 3, shardID: 4, expected: false},
+		{shardCount: 4, count: 3, shardID: 0, expected: true},
+		{shardCount: 4, count: 3, shardID: 4, expected: false},
 	}
 
 	for _, test := range tests {
@@ -59,7 +59,7 @@ func TestMultiBlsKeyGeneration(t *testing.T) {
 			blsKeys = append(blsKeys, &BlsKey{Passphrase: "", FilePath: ""})
 		}
 
-		blsKeys, shardCount, err := genBlsKeyForNode(blsKeys, test.node, test.shardID)
+		blsKeys, shardCount, err := genBlsKeyForShard(blsKeys, test.shardCount, test.shardID)
 		if err != nil {
 			valid = false
 		}
@@ -76,7 +76,7 @@ func TestMultiBlsKeyGeneration(t *testing.T) {
 		valid = (successCount == int(test.count))
 
 		if valid != test.expected {
-			t.Errorf("genBlsKeyForNode - failed to generate %d keys for shard %d using node %s", test.count, test.shardID, test.node)
+			t.Errorf("genBlsKeyForShard - failed to generate %d keys for shard %d using node %s", test.count, test.shardID, test.shardCount)
 		}
 	}
 }

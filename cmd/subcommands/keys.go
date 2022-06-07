@@ -4,6 +4,9 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
+	"github.com/harmony-one/go-sdk/pkg/sharding"
+	"github.com/harmony-one/go-sdk/pkg/validation"
+	errors2 "github.com/pkg/errors"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -19,7 +22,6 @@ import (
 	"github.com/harmony-one/go-sdk/pkg/ledger"
 	"github.com/harmony-one/go-sdk/pkg/mnemonic"
 	"github.com/harmony-one/go-sdk/pkg/store"
-	"github.com/harmony-one/go-sdk/pkg/validation"
 )
 
 const (
@@ -36,6 +38,7 @@ var (
 	blsFilePath            string
 	blsShardID             uint32
 	blsCount               uint32
+	shardCount             int
 	ppPrompt               = fmt.Sprintf(
 		"prompt for passphrase, otherwise use default passphrase: \"`%s`\"", c.DefaultPassphrase,
 	)
@@ -340,12 +343,21 @@ func keysSub() []*cobra.Command {
 		Use:   "generate-bls-keys",
 		Short: "Generates multiple bls keys for a given shard network configuration and then encrypts and saves the private key with a requested passphrase",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if err := validation.ValidateNodeConnection(node); err != nil {
-				fmt.Fprintf(os.Stderr, "Cannot connect to node %v, using Harmony mainnet endpoint %v\n",
-					node, defaultMainnetEndpoint)
-				node = defaultMainnetEndpoint
+			if shardCount <= 0 {
+				fmt.Printf("shard-count not provided, fetch node info instead")
+				if err := validation.ValidateNodeConnection(node); err != nil {
+					fmt.Fprintf(os.Stderr, "Cannot connect to node %v, using Harmony mainnet endpoint %v\n",
+						node, defaultMainnetEndpoint)
+					node = defaultMainnetEndpoint
+				}
+				shardingStructure, err := sharding.Structure(node)
+				if err != nil {
+					return errors2.WithMessage(err, fmt.Sprintf("Cannot get shard structure for node %v", node))
+				}
+				shardCount = len(shardingStructure)
 			}
-			blsKeys := []*keys.BlsKey{}
+
+			var blsKeys []*keys.BlsKey
 
 			for i := uint32(0); i < blsCount; i++ {
 				keyFilePath := blsFilePath
@@ -366,7 +378,7 @@ func keysSub() []*cobra.Command {
 				blsKeys = append(blsKeys, blsKey)
 			}
 
-			return keys.GenMultiBlsKeys(blsKeys, node, blsShardID)
+			return keys.GenMultiBlsKeys(blsKeys, shardCount, blsShardID)
 		},
 	}
 	cmdGenerateMultiBlsKeys.Flags().StringVar(&blsFilePath, "bls-file-path", "",
@@ -374,6 +386,7 @@ func keysSub() []*cobra.Command {
 	cmdGenerateMultiBlsKeys.Flags().BoolVar(&userProvidesPassphrase, "passphrase", false, ppPrompt)
 	cmdGenerateMultiBlsKeys.Flags().StringVar(&passphraseFilePath, "passphrase-file", "", "path to a file containing the passphrase")
 	cmdGenerateMultiBlsKeys.Flags().Uint32Var(&blsShardID, "shard", 0, "which shard to create bls keys for")
+	cmdGenerateMultiBlsKeys.Flags().IntVar(&shardCount, "shard-count", 0, "how many shard in total")
 	cmdGenerateMultiBlsKeys.Flags().Uint32Var(&blsCount, "count", 1, "how many bls keys to generate")
 
 	cmdRecoverBlsKey := &cobra.Command{

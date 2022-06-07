@@ -1,0 +1,7 @@
+services:
+  builder:
+    image: harmonyone/main:stable
+    working_dir: /root/go/src/github.com/harmony-one/go-sdk
+    volumes:
+      - .:/root/go/src/github.com/harmony-one/go-sdk
+    tty: true

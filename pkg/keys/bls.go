@@ -9,6 +9,9 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/btcsuite/btcd/btcec"
+	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/harmony-one/go-sdk/pkg/address"
 	"io"
 	"io/ioutil"
 	"math/big"
@@ -18,7 +21,6 @@ import (
 
 	bls_core "github.com/harmony-one/bls/ffi/go/bls"
 	"github.com/harmony-one/go-sdk/pkg/common"
-	"github.com/harmony-one/go-sdk/pkg/sharding"
 	"github.com/harmony-one/go-sdk/pkg/validation"
 	"github.com/harmony-one/harmony/crypto/bls"
 	"github.com/harmony-one/harmony/crypto/hash"
@@ -35,6 +37,8 @@ type BlsKey struct {
 	Passphrase     string
 	FilePath       string
 	ShardPublicKey *bls.SerializedPublicKey
+	OneAddress     string
+	HexAddress     string
 }
 
 //Initialize - initialize a bls key and assign a random private bls key if not already done
@@ -67,12 +71,12 @@ func GenBlsKey(blsKey *BlsKey) error {
 }
 
 // GenMultiBlsKeys - generate multiple BLS keys for a given shard and node/network
-func GenMultiBlsKeys(blsKeys []*BlsKey, node string, shardID uint32) error {
-	blsKeys, _, err := genBlsKeyForNode(blsKeys, node, shardID)
+func GenMultiBlsKeys(blsKeys []*BlsKey, shardCount int, shardID uint32) error {
+	blsKeys, _, err := genBlsKeyForShard(blsKeys, shardCount, shardID)
 	if err != nil {
 		return err
 	}
-	outputs := []string{}
+	var outputs []string
 	for _, blsKey := range blsKeys {
 		out, err := writeBlsKeyToFile(blsKey)
 		if err != nil {
@@ -260,9 +264,12 @@ func writeBlsKeyToFile(blsKey *BlsKey) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	sk, _ := btcec.PrivKeyFromBytes(btcec.S256(), blsKey.PrivateKey.Serialize())
+	hexAddr := crypto.PubkeyToAddress(sk.PublicKey)
+	oneAddress := address.ToBech32(hexAddr)
 	out := fmt.Sprintf(`
-{"public-key" : "%s", "private-key" : "%s", "encrypted-private-key-path" : "%s"}`,
-		blsKey.PublicKeyHex, blsKey.PrivateKeyHex, blsKey.FilePath)
+{"one-address": "%s", "hex-address": "%s", "public-key" : "%s", "private-key": "%s", "encrypted-private-key": "%s", "encrypted-private-key-path": "%s"}`,
+		oneAddress, hexAddr.Hex(), blsKey.PublicKeyHex, blsKey.PrivateKeyHex, encryptedPrivateKeyStr, blsKey.FilePath)
 
 	return out, nil
 }
@@ -334,22 +341,16 @@ func decryptRaw(data []byte, passphrase string) ([]byte, error) {
 	return plaintext, err
 }
 
-func genBlsKeyForNode(blsKeys []*BlsKey, node string, shardID uint32) ([]*BlsKey, int, error) {
-	shardingStructure, err := sharding.Structure(node)
-	if err != nil {
-		return blsKeys, -1, err
-	}
-	shardCount := len(shardingStructure)
-
+func genBlsKeyForShard(blsKeys []*BlsKey, shardCount int, shardID uint32) ([]*BlsKey, int, error) {
 	if !validation.ValidShardID(shardID, uint32(shardCount)) {
-		return blsKeys, shardCount, fmt.Errorf("node %s only supports a total of %d shards - supplied shard id %d isn't valid", node, shardCount, shardID)
+		return blsKeys, shardCount, fmt.Errorf("shard count %d - supplied shard id %d isn't valid", shardCount, shardID)
 	}
 
 	for _, blsKey := range blsKeys {
 		for {
 			blsKey.Initialize()
 			shardPubKey := new(bls.SerializedPublicKey)
-			if err = shardPubKey.FromLibBLSPublicKey(blsKey.PublicKey); err != nil {
+			if err := shardPubKey.FromLibBLSPublicKey(blsKey.PublicKey); err != nil {
 				return blsKeys, shardCount, err
 			}
 
