@@ -14,20 +14,18 @@ type ChainID struct {
 }
 
 type chainIDList struct {
-	MainNet    ChainID `json:"mainnet"`
-	TestNet    ChainID `json:"testnet"`
-	PangaeaNet ChainID `json:"pangaea"`
-	PartnerNet ChainID `json:"partner"`
-	StressNet  ChainID `json:"stress"`
+	MainNet   ChainID `json:"mainnet"`
+	TestNet   ChainID `json:"testnet"`
+	DevNet    ChainID `json:"devnet"`
+	StressNet ChainID `json:"stress"`
 }
 
 // Chain is an enumeration of the known Chain-IDs
 var Chain = chainIDList{
-	MainNet:    ChainID{"mainnet", big.NewInt(1)},
-	TestNet:    ChainID{"testnet", big.NewInt(2)},
-	PangaeaNet: ChainID{"pangaea", big.NewInt(3)},
-	PartnerNet: ChainID{"partner", big.NewInt(4)},
-	StressNet:  ChainID{"stress", big.NewInt(5)},
+	MainNet:   ChainID{"mainnet", big.NewInt(1)},
+	TestNet:   ChainID{"testnet", big.NewInt(2)},
+	DevNet:    ChainID{"devnet", big.NewInt(3)},
+	StressNet: ChainID{"stress", big.NewInt(5)},
 }
 
 func (c chainIDList) String() string {
@@ -42,12 +40,8 @@ func StringToChainID(name string) (*ChainID, error) {
 		return &Chain.MainNet, nil
 	case "testnet":
 		return &Chain.TestNet, nil
-	case "pangaea":
-		return &Chain.PangaeaNet, nil
 	case "devnet":
-		return &Chain.PartnerNet, nil
-	case "partner":
-		return &Chain.PartnerNet, nil
+		return &Chain.DevNet, nil
 	case "stressnet":
 		return &Chain.StressNet, nil
 	case "dryrun":

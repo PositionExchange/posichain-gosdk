@@ -95,7 +95,7 @@ var (
 					}
 				} else if endpoint.Match([]byte(node)) {
 					chainName = endpointToChainID(node)
-				} else if strings.Contains(node, "api.harmony.one") {
+				} else if strings.Contains(node, "api.harmony.one") { //TODO replace by Posichain
 					chainName = chainIDWrapper{chainID: &common.Chain.MainNet}
 				} else {
 					chainName = chainIDWrapper{chainID: &common.Chain.TestNet}
@@ -138,19 +138,16 @@ func init() {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var docNode, docNet string
 			if node == defaultNodeAddr || chainName.chainID == &common.Chain.MainNet {
-				docNode = `https://api.s0.t.hmny.io`
+				docNode = `https://api.s0.t.hmny.io` //TODO replace by Posichain
 				docNet = `Mainnet`
 			} else if chainName.chainID == &common.Chain.TestNet {
-				docNode = `https://api.s0.b.hmny.io`
+				docNode = `https://api.s0.b.hmny.io` //TODO replace by Posichain
 				docNet = `Long-Running Testnet`
-			} else if chainName.chainID == &common.Chain.PangaeaNet {
-				docNode = `https://api.s0.os.hmny.io`
-				docNet = `Open Staking Network`
-			} else if chainName.chainID == &common.Chain.PartnerNet {
-				docNode = `https://api.s0.ps.hmny.io`
-				docNet = `Partner Testnet`
+			} else if chainName.chainID == &common.Chain.DevNet {
+				docNode = `https://api.s0.d.hmny.io` //TODO replace by Posichain
+				docNet = `Long-Running Devnet`
 			} else if chainName.chainID == &common.Chain.StressNet {
-				docNode = `https://api.s0.stn.hmny.io`
+				docNode = `https://api.s0.stn.hmny.io` //TODO replace by Posichain
 				docNet = `Stress Testing Network`
 			}
 			fmt.Print(strings.ReplaceAll(strings.ReplaceAll(cookbookDoc, `[NODE]`, docNode), `[NETWORK]`, docNet))
@@ -212,10 +209,8 @@ func endpointToChainID(nodeAddr string) chainIDWrapper {
 		return chainIDWrapper{chainID: &common.Chain.MainNet}
 	} else if strings.Contains(nodeAddr, ".b.") {
 		return chainIDWrapper{chainID: &common.Chain.TestNet}
-	} else if strings.Contains(nodeAddr, ".os.") {
-		return chainIDWrapper{chainID: &common.Chain.PangaeaNet}
-	} else if strings.Contains(nodeAddr, ".ps.") {
-		return chainIDWrapper{chainID: &common.Chain.PartnerNet}
+	} else if strings.Contains(nodeAddr, ".d.") {
+		return chainIDWrapper{chainID: &common.Chain.DevNet}
 	} else if strings.Contains(nodeAddr, ".stn.") {
 		return chainIDWrapper{chainID: &common.Chain.StressNet}
 	} else if strings.Contains(nodeAddr, ".dry.") {

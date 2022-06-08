@@ -37,7 +37,7 @@ import ssl
 
 script_directory = os.path.dirname(os.path.realpath(__file__))
 _hmy_call_and_prefix = [f"{script_directory}/hmy"]
-chain_id_options = {"mainnet", "testnet", "stressnet", "partner", "dryrun"}
+chain_id_options = {"mainnet", "testnet", "devnet", "stressnet", "dryrun"}
 default_passphrase = ""
 
 
