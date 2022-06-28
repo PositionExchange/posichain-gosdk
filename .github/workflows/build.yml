@@ -60,7 +60,7 @@ jobs:
           path: go/src/github.com/PositionExchange/posichain
           ref: main
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.TMP_ACCESS_TOKEN }}
         env:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
 
