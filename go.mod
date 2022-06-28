@@ -3,6 +3,7 @@ module github.com/harmony-one/go-sdk
 go 1.14
 
 require (
+	github.com/PositionExchange/bls v0.0.0-20210728190118-2b7e49894c0f
 	github.com/aristanetworks/goarista v0.0.0-20191023202215-f096da5361bb // indirect
 	github.com/btcsuite/btcd v0.21.0-beta
 	github.com/btcsuite/btcutil v1.0.2
@@ -12,7 +13,6 @@ require (
 	github.com/ethereum/go-ethereum v1.9.23
 	github.com/fatih/color v1.9.0
 	github.com/golang/snappy v0.0.2-0.20200707131729-196ae77b8a26 // indirect
-	github.com/harmony-one/bls v0.0.7-0.20191214005344-88c23f91a8a9
 	github.com/harmony-one/harmony v1.10.2-0.20210123081216-6993b9ad0ca1
 	github.com/karalabe/hid v1.0.0
 	github.com/mattn/go-colorable v0.1.9

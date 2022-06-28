@@ -1,7 +1,7 @@
 services:
-  builder:
-    image: harmonyone/main:stable
-    working_dir: /root/go/src/github.com/harmony-one/go-sdk
+  sdk:
+    build: .
     volumes:
-      - .:/root/go/src/github.com/harmony-one/go-sdk
+      - .:/workspace/sdk
+    entrypoint: bash
     tty: true

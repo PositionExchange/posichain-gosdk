@@ -3,7 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
-	bls_core "github.com/harmony-one/bls/ffi/go/bls"
+	bls_core "github.com/PositionExchange/bls/ffi/go/bls"
 	"github.com/harmony-one/go-sdk/pkg/address"
 	"github.com/harmony-one/go-sdk/pkg/rpc"
 	"github.com/harmony-one/harmony/crypto/bls"
