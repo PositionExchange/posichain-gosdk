@@ -35,23 +35,19 @@ jobs:
           echo ${GOPATH}
           echo ${GOROOT}
         env:
-          GOPATH: ${GITHUB_WORKSPACE}/go
+          GOPATH: ${{ GITHUB_WORKSPACE }}/go
 
       - name: Checkout dependence repo (mcl)
         uses: actions/checkout@v3
         with:
           repository: PositionExchange/mcl
           path: go/src/github.com/PositionExchange/mcl
-        env:
-          GOPATH: ${GITHUB_WORKSPACE}/go
 
       - name: Checkout dependence repo (bls)
         uses: actions/checkout@v3
         with:
           repository: PositionExchange/bls
           path: go/src/github.com/PositionExchange/bls
-        env:
-          GOPATH: ${GITHUB_WORKSPACE}/go
 
       - name: Checkout dependence code (core)
         uses: actions/checkout@v3
@@ -61,9 +57,6 @@ jobs:
           ref: develop # TODO checkout main later
           fetch-depth: 0
           token: ${{ secrets.TMP_ACCESS_TOKEN }} # TODO remove token when posichain is public
-        env:
-          GOPATH: ${GITHUB_WORKSPACE}/go
-
 
 
 
@@ -73,26 +66,26 @@ jobs:
           RELEASE=$(git describe --long | cut -f2 -d-)
           echo "build_version=$VERSION" >> $GITHUB_ENV
           echo "build_release=$RELEASE" >> $GITHUB_ENV
-        working-directory: ${GITHUB_WORKSPACE}/go/src/github.com/PositionExchange/posichain-gosdk
+        working-directory: ${{ GITHUB_WORKSPACE }}/go/src/github.com/PositionExchange/posichain-gosdk
         env:
-          GOPATH: ${GITHUB_WORKSPACE}/go
+          GOPATH: ${{ GITHUB_WORKSPACE }}/go
 
       - name: Build hmy binary for Linux
         if: matrix.os == 'ubuntu-18.04'
         run: |
           make static
-        working-directory: ${GITHUB_WORKSPACE}/go/src/github.com/PositionExchange/posichain-gosdk
+        working-directory: ${{ GITHUB_WORKSPACE }}/go/src/github.com/PositionExchange/posichain-gosdk
         env:
-          GOPATH: ${GITHUB_WORKSPACE}/go
+          GOPATH: ${{ GITHUB_WORKSPACE }}/go
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: hmy
-          path: ${GITHUB_WORKSPACE}/go/src/github.com/PositionExchange/posichain-gosdk/dist/*
+          path: ${{ GITHUB_WORKSPACE }}/go/src/github.com/PositionExchange/posichain-gosdk/dist/*
           retention-days: 1
         env:
-          GOPATH: ${GITHUB_WORKSPACE}/go
+          GOPATH: ${{ GITHUB_WORKSPACE }}/go
 
   # build-arm64:
   #   name: Build hmy binary
@@ -184,9 +177,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: go/src/github.com/PositionExchange/posichain-gosdk
-        env:
-          GOPATH: ${GITHUB_WORKSPACE}/go
-
 
       - name: Get latest version
         run: |
@@ -196,9 +186,9 @@ jobs:
           echo "build_version=$VERSION" >> $GITHUB_ENV
           echo "build_version_long=$VERSION_LONG" >> $GITHUB_ENV
           echo "build_release=$RELEASE" >> $GITHUB_ENV
-        working-directory: ${GITHUB_WORKSPACE}/go/src/github.com/PositionExchange/posichain-gosdk
+        working-directory: ${{ GITHUB_WORKSPACE }}/go/src/github.com/PositionExchange/posichain-gosdk
         env:
-          GOPATH: ${GITHUB_WORKSPACE}/go
+          GOPATH: ${{ GITHUB_WORKSPACE }}/go
 
       - name: Download artifact
         uses: actions/download-artifact@v2
@@ -225,11 +215,10 @@ jobs:
       - name: Get tag message
         env:
           TAG_SHA: ${{ github.event.after }}
-          GOPATH: /home/runner/work/go-sdk/go
         run: |
           touch ./tag_message.md
           echo -e "$TAG_SHA\n\nThe released version: $build_version_long" >> ./tag_message.md
-        working-directory: ${GITHUB_WORKSPACE}/go/src/github.com/PositionExchange/posichain-gosdk
+        working-directory: ${{ GITHUB_WORKSPACE }}/go/src/github.com/PositionExchange/posichain-gosdk
 
 
 
@@ -238,13 +227,12 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GOPATH: ${GITHUB_WORKSPACE}/go
         with:
           tag_name: ${{ github.ref }}
           release_name: Mainnet Release ${{ env.build_version }}
           draft: true
           prerelease: false
-          body_path: ${GITHUB_WORKSPACE}/go/src/github.com/PositionExchange/posichain-gosdk/tag_message.md
+          body_path: ${{ GITHUB_WORKSPACE }}/go/src/github.com/PositionExchange/posichain-gosdk/tag_message.md
 
 
 
@@ -252,7 +240,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GOPATH: ${GITHUB_WORKSPACE}/go
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./hmy
@@ -284,7 +271,7 @@ jobs:
       #   uses: actions/upload-release-asset@v1
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     GOPATH: ${GITHUB_WORKSPACE}/go
+      #     GOPATH: ${{ GITHUB_WORKSPACE }}/go
       #   with:
       #     upload_url: ${{ steps.create_release.outputs.upload_url }}
       #     asset_path: ./hmy-arm64
