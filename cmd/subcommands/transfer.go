@@ -4,12 +4,14 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/PositionExchange/posichain/core/vm"
 	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/PositionExchange/posichain/accounts"
 	"github.com/harmony-one/go-sdk/pkg/address"
 	"github.com/harmony-one/go-sdk/pkg/common"
 	"github.com/harmony-one/go-sdk/pkg/rpc"
@@ -17,9 +19,6 @@ import (
 	"github.com/harmony-one/go-sdk/pkg/store"
 	"github.com/harmony-one/go-sdk/pkg/transaction"
 	"github.com/harmony-one/go-sdk/pkg/validation"
-	"github.com/harmony-one/harmony/accounts"
-	"github.com/harmony-one/harmony/core"
-
 	"github.com/spf13/cobra"
 )
 
@@ -152,7 +151,7 @@ func handlerForTransaction(txLog *transactionLog) error {
 
 	var gLimit uint64
 	if gasLimit == "" {
-		gLimit, err = core.IntrinsicGas([]byte(""), false, true, true, false)
+		gLimit, err = vm.IntrinsicGas([]byte(""), false, true, true, false)
 		if handlerForError(txLog, err) != nil {
 			return err
 		}

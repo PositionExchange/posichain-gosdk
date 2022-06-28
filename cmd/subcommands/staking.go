@@ -2,12 +2,21 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/PositionExchange/posichain/core/vm"
 	"math/big"
 	"strconv"
 	"strings"
 	"time"
 
 	bls_core "github.com/PositionExchange/bls/ffi/go/bls"
+	"github.com/PositionExchange/posichain/accounts"
+	"github.com/PositionExchange/posichain/accounts/keystore"
+	"github.com/PositionExchange/posichain/common/denominations"
+	"github.com/PositionExchange/posichain/crypto/bls"
+	"github.com/PositionExchange/posichain/numeric"
+	"github.com/PositionExchange/posichain/shard"
+	"github.com/PositionExchange/posichain/staking/effective"
+	staking "github.com/PositionExchange/posichain/staking/types"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/rlp"
 	"github.com/harmony-one/go-sdk/pkg/address"
@@ -17,15 +26,6 @@ import (
 	"github.com/harmony-one/go-sdk/pkg/rpc"
 	"github.com/harmony-one/go-sdk/pkg/store"
 	"github.com/harmony-one/go-sdk/pkg/transaction"
-	"github.com/harmony-one/harmony/accounts"
-	"github.com/harmony-one/harmony/accounts/keystore"
-	"github.com/harmony-one/harmony/common/denominations"
-	"github.com/harmony-one/harmony/core"
-	"github.com/harmony-one/harmony/crypto/bls"
-	"github.com/harmony-one/harmony/numeric"
-	"github.com/harmony-one/harmony/shard"
-	"github.com/harmony-one/harmony/staking/effective"
-	staking "github.com/harmony-one/harmony/staking/types"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -99,7 +99,7 @@ func createStakingTransaction(nonce uint64, f staking.StakeMsgFulfiller) (*staki
 	var gLimit uint64
 	if gasLimit == "" {
 		isCreateValidator := directive == staking.DirectiveCreateValidator
-		gLimit, err = core.IntrinsicGas(data, false, true, true, isCreateValidator)
+		gLimit, err = vm.IntrinsicGas(data, false, true, true, isCreateValidator)
 		if err != nil {
 			return nil, err
 		}

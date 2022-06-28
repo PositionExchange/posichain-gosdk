@@ -2,9 +2,9 @@ package governance
 
 import (
 	"fmt"
-	"github.com/harmony-one/harmony/accounts"
-	"github.com/harmony-one/harmony/accounts/keystore"
-	"github.com/harmony-one/harmony/crypto/hash"
+	"github.com/PositionExchange/posichain/accounts"
+	"github.com/PositionExchange/posichain/accounts/keystore"
+	"github.com/PositionExchange/posichain/crypto/hash"
 	"strconv"
 	"strings"
 	"time"

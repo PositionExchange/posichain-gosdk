@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"path/filepath"
 
+	"github.com/PositionExchange/posichain/accounts"
 	"github.com/harmony-one/go-sdk/pkg/store"
-	"github.com/harmony-one/harmony/accounts"
 )
 
 var (

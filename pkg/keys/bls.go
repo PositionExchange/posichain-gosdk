@@ -20,11 +20,11 @@ import (
 	"strings"
 
 	bls_core "github.com/PositionExchange/bls/ffi/go/bls"
+	"github.com/PositionExchange/posichain/crypto/bls"
+	"github.com/PositionExchange/posichain/crypto/hash"
+	"github.com/PositionExchange/posichain/staking/types"
 	"github.com/harmony-one/go-sdk/pkg/common"
 	"github.com/harmony-one/go-sdk/pkg/validation"
-	"github.com/harmony-one/harmony/crypto/bls"
-	"github.com/harmony-one/harmony/crypto/hash"
-	"github.com/harmony-one/harmony/staking/types"
 	"golang.org/x/crypto/ssh/terminal"
 )
 

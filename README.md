@@ -1,4 +1,4 @@
-# Harmony's go-sdk
+# Posichain's Golang SDK
 
 This is a go layer on top of the Harmony RPC, included is a CLI tool that you can build with a
 simple invocation of `make`
@@ -10,7 +10,7 @@ documentation on how to use the `hmy` CLI tools
 
 Working directly on this repo can be challenging because of the upstream dependencies. Follow the
 README in the main repo for an already ready development environment:
-https://github.com/harmony-one/harmony/blob/master/README.md.
+https://github.com/PositionExchange/posichain/blob/main/README.md.
 
 ...for the impatient:
 
