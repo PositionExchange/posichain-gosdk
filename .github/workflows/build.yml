@@ -58,9 +58,9 @@ jobs:
         with:
           repository: PositionExchange/posichain
           path: go/src/github.com/PositionExchange/posichain
-          ref: main
+          ref: develop # TODO checkout main later
           fetch-depth: 0
-          token: ${{ secrets.TMP_ACCESS_TOKEN }}
+          token: ${{ secrets.TMP_ACCESS_TOKEN }} # TODO remove token when posichain is public
         env:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
 
