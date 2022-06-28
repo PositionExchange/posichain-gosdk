@@ -23,7 +23,7 @@ jobs:
 
 
       - name: Checkout go-sdk code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: go/src/github.com/PositionExchange/posichain-gosdk
 
@@ -38,7 +38,7 @@ jobs:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
 
       - name: Checkout dependence repo (mcl)
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: PositionExchange/mcl
           path: go/src/github.com/PositionExchange/mcl
@@ -46,7 +46,7 @@ jobs:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
 
       - name: Checkout dependence repo (bls)
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: PositionExchange/bls
           path: go/src/github.com/PositionExchange/bls
@@ -54,7 +54,7 @@ jobs:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
 
       - name: Checkout dependence code (core)
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: PositionExchange/posichain
           path: go/src/github.com/PositionExchange/posichain
