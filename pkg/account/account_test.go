@@ -3,7 +3,7 @@ package account
 import (
 	"testing"
 
-	"github.com/harmony-one/go-sdk/pkg/store"
+	"github.com/PositionExchange/posichain-gosdk/pkg/store"
 )
 
 func TestAccountGetsRemoved(t *testing.T) {

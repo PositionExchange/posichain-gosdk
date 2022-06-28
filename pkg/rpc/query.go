@@ -8,7 +8,7 @@ import (
 
 	"github.com/valyala/fasthttp"
 
-	"github.com/harmony-one/go-sdk/pkg/common"
+	"github.com/PositionExchange/posichain-gosdk/pkg/common"
 )
 
 var (

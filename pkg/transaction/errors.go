@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/harmony-one/go-sdk/pkg/rpc"
+	"github.com/PositionExchange/posichain-gosdk/pkg/rpc"
 )
 
 var (

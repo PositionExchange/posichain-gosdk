@@ -7,11 +7,11 @@ import (
 	"path"
 	"time"
 
+	"github.com/PositionExchange/posichain-gosdk/pkg/address"
+	"github.com/PositionExchange/posichain-gosdk/pkg/common"
+	c "github.com/PositionExchange/posichain-gosdk/pkg/common"
 	"github.com/PositionExchange/posichain/accounts"
 	"github.com/PositionExchange/posichain/accounts/keystore"
-	"github.com/harmony-one/go-sdk/pkg/address"
-	"github.com/harmony-one/go-sdk/pkg/common"
-	c "github.com/harmony-one/go-sdk/pkg/common"
 	"github.com/pkg/errors"
 
 	homedir "github.com/mitchellh/go-homedir"

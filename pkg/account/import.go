@@ -11,13 +11,13 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/PositionExchange/posichain-gosdk/pkg/address"
+	"github.com/PositionExchange/posichain-gosdk/pkg/common"
+	"github.com/PositionExchange/posichain-gosdk/pkg/mnemonic"
+	"github.com/PositionExchange/posichain-gosdk/pkg/store"
 	"github.com/PositionExchange/posichain/accounts/keystore"
 	"github.com/btcsuite/btcd/btcec"
 	mapset "github.com/deckarep/golang-set"
-	"github.com/harmony-one/go-sdk/pkg/address"
-	"github.com/harmony-one/go-sdk/pkg/common"
-	"github.com/harmony-one/go-sdk/pkg/mnemonic"
-	"github.com/harmony-one/go-sdk/pkg/store"
 )
 
 // ImportFromPrivateKey allows import of an ECDSA private key

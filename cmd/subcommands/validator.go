@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/harmony-one/go-sdk/pkg/rpc"
+	"github.com/PositionExchange/posichain-gosdk/pkg/rpc"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )

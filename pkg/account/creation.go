@@ -3,9 +3,9 @@ package account
 import (
 	"errors"
 
-	"github.com/harmony-one/go-sdk/pkg/keys"
-	"github.com/harmony-one/go-sdk/pkg/mnemonic"
-	"github.com/harmony-one/go-sdk/pkg/store"
+	"github.com/PositionExchange/posichain-gosdk/pkg/keys"
+	"github.com/PositionExchange/posichain-gosdk/pkg/mnemonic"
+	"github.com/PositionExchange/posichain-gosdk/pkg/store"
 )
 
 var (

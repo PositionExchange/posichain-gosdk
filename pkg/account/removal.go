@@ -5,8 +5,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/harmony-one/go-sdk/pkg/common"
-	"github.com/harmony-one/go-sdk/pkg/store"
+	"github.com/PositionExchange/posichain-gosdk/pkg/common"
+	"github.com/PositionExchange/posichain-gosdk/pkg/store"
 	"github.com/mitchellh/go-homedir"
 )
 

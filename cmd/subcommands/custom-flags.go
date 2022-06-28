@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"github.com/harmony-one/go-sdk/pkg/address"
-	"github.com/harmony-one/go-sdk/pkg/common"
-	"github.com/harmony-one/go-sdk/pkg/validation"
+	"github.com/PositionExchange/posichain-gosdk/pkg/address"
+	"github.com/PositionExchange/posichain-gosdk/pkg/common"
+	"github.com/PositionExchange/posichain-gosdk/pkg/validation"
 	"github.com/pkg/errors"
 )
 

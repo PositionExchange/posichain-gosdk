@@ -25,7 +25,7 @@ jobs:
       - name: Checkout hmy code
         uses: actions/checkout@v2
         with:
-          path: go/src/github.com/harmony-one/go-sdk
+          path: go/src/github.com/PositionExchange/posichain-gosdk
 
       - name: Debug
         run: |
@@ -40,24 +40,24 @@ jobs:
       - name: Checkout dependence repo
         uses: actions/checkout@v2
         with:
-          repository: harmony-one/mcl
-          path: go/src/github.com/harmony-one/mcl
+          repository: PositionExchange/mcl
+          path: go/src/github.com/PositionExchange/mcl
         env:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
 
       - name: Checkout dependence repo
         uses: actions/checkout@v2
         with:
-          repository: harmony-one/bls
-          path: go/src/github.com/harmony-one/bls
+          repository: PositionExchange/bls
+          path: go/src/github.com/PositionExchange/bls
         env:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
 
       - name: Checkout dependence code
         uses: actions/checkout@v2
         with:
-          repository: harmony-one/harmony
-          path: go/src/github.com/harmony-one/harmony
+          repository: PositionExchange/posichain
+          path: go/src/github.com/PositionExchange/posichain
           ref: main
           fetch-depth: 0
         env:
@@ -72,7 +72,7 @@ jobs:
           RELEASE=$(git describe --long | cut -f2 -d-)
           echo "build_version=$VERSION" >> $GITHUB_ENV
           echo "build_release=$RELEASE" >> $GITHUB_ENV
-        working-directory: /home/runner/work/go-sdk/go-sdk/go/src/github.com/harmony-one/go-sdk
+        working-directory: /home/runner/work/go-sdk/go-sdk/go/src/github.com/PositionExchange/posichain-gosdk
         env:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
 
@@ -80,7 +80,7 @@ jobs:
         if: matrix.os == 'ubuntu-18.04'
         run: |
           make static
-        working-directory: /home/runner/work/go-sdk/go-sdk/go/src/github.com/harmony-one/go-sdk
+        working-directory: /home/runner/work/go-sdk/go-sdk/go/src/github.com/PositionExchange/posichain-gosdk
         env:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
 
@@ -88,7 +88,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: hmy
-          path: /home/runner/work/go-sdk/go-sdk/go/src/github.com/harmony-one/go-sdk/dist/*
+          path: /home/runner/work/go-sdk/go-sdk/go/src/github.com/PositionExchange/posichain-gosdk/dist/*
           retention-days: 1
         env:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
@@ -111,7 +111,7 @@ jobs:
   #     - name: Checkout hmy code
   #       uses: actions/checkout@v2
   #       with:
-  #         path: go/src/github.com/harmony-one/go-sdk
+  #         path: go/src/github.com/PositionExchange/posichain-gosdk
 
   #     - name: Debug
   #       run: |
@@ -126,24 +126,24 @@ jobs:
   #     - name: Checkout dependence repo
   #       uses: actions/checkout@v2
   #       with:
-  #         repository: harmony-one/mcl
-  #         path: go/src/github.com/harmony-one/mcl
+  #         repository: PositionExchange/mcl
+  #         path: go/src/github.com/PositionExchange/mcl
   #       env:
   #         GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
 
   #     - name: Checkout dependence repo
   #       uses: actions/checkout@v2
   #       with:
-  #         repository: harmony-one/bls
-  #         path: go/src/github.com/harmony-one/bls
+  #         repository: PositionExchange/bls
+  #         path: go/src/github.com/PositionExchange/bls
   #       env:
   #         GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
 
   #     - name: Checkout dependence code
   #       uses: actions/checkout@v2
   #       with:
-  #         repository: harmony-one/harmony
-  #         path: go/src/github.com/harmony-one/harmony
+  #         repository: PositionExchange/posichain
+  #         path: go/src/github.com/PositionExchange/posichain
   #         ref: main
   #         fetch-depth: 0
   #       env:
@@ -154,7 +154,7 @@ jobs:
   #         make static
   #         mv dist/hmy dist/hmy-arm64
   #         chmod +x dist/hmy-arm64
-  #       working-directory: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go/src/github.com/harmony-one/go-sdk
+  #       working-directory: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go/src/github.com/PositionExchange/posichain-gosdk
   #       env:
   #         GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
 
@@ -162,7 +162,7 @@ jobs:
   #       uses: actions/upload-artifact@v2
   #       with:
   #         name: hmy-arm64
-  #         path: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go/src/github.com/harmony-one/go-sdk/dist/*
+  #         path: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go/src/github.com/PositionExchange/posichain-gosdk/dist/*
   #         retention-days: 1
   #       env:
   #         GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
@@ -182,7 +182,7 @@ jobs:
       - name: Checkout hmy core code
         uses: actions/checkout@v2
         with:
-          path: go/src/github.com/harmony-one/go-sdk
+          path: go/src/github.com/PositionExchange/posichain-gosdk
         env:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
 
@@ -195,7 +195,7 @@ jobs:
           echo "build_version=$VERSION" >> $GITHUB_ENV
           echo "build_version_long=$VERSION_LONG" >> $GITHUB_ENV
           echo "build_release=$RELEASE" >> $GITHUB_ENV
-        working-directory: /home/runner/work/go-sdk/go-sdk/go/src/github.com/harmony-one/go-sdk
+        working-directory: /home/runner/work/go-sdk/go-sdk/go/src/github.com/PositionExchange/posichain-gosdk
         env:
           GOPATH: /home/runner/work/go-sdk/go-sdk/go
 
@@ -228,7 +228,7 @@ jobs:
         run: |
           touch ./tag_message.md
           echo -e "$TAG_SHA\n\nThe released version: $build_version_long" >> ./tag_message.md
-        working-directory: /home/runner/work/go-sdk/go-sdk/go/src/github.com/harmony-one/go-sdk
+        working-directory: /home/runner/work/go-sdk/go-sdk/go/src/github.com/PositionExchange/posichain-gosdk
 
 
 
@@ -243,7 +243,7 @@ jobs:
           release_name: Mainnet Release ${{ env.build_version }}
           draft: true
           prerelease: false
-          body_path: /home/runner/work/go-sdk/go-sdk/go/src/github.com/harmony-one/go-sdk/tag_message.md
+          body_path: /home/runner/work/go-sdk/go-sdk/go/src/github.com/PositionExchange/posichain-gosdk/tag_message.md
 
 
 

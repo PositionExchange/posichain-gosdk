@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/PositionExchange/posichain-gosdk/pkg/common"
+	"github.com/PositionExchange/posichain-gosdk/pkg/rpc"
 	"github.com/PositionExchange/posichain/common/denominations"
 	"github.com/PositionExchange/posichain/numeric"
-	"github.com/harmony-one/go-sdk/pkg/common"
-	"github.com/harmony-one/go-sdk/pkg/rpc"
 )
 
 var (

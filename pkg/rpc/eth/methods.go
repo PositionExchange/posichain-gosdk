@@ -3,7 +3,7 @@ package v1
 import (
 	"fmt"
 
-	rpcCommon "github.com/harmony-one/go-sdk/pkg/rpc/common"
+	rpcCommon "github.com/PositionExchange/posichain-gosdk/pkg/rpc/common"
 )
 
 const (

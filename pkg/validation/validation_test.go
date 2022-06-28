@@ -3,7 +3,7 @@ package validation
 import (
 	"testing"
 
-	"github.com/harmony-one/go-sdk/pkg/sharding"
+	"github.com/PositionExchange/posichain-gosdk/pkg/sharding"
 )
 
 func TestIsValidAddress(t *testing.T) {

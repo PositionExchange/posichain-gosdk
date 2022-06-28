@@ -10,13 +10,13 @@ import (
 	"strings"
 	"time"
 
+	"github.com/PositionExchange/posichain-gosdk/pkg/address"
+	"github.com/PositionExchange/posichain-gosdk/pkg/common"
+	"github.com/PositionExchange/posichain-gosdk/pkg/rpc"
+	rpcEth "github.com/PositionExchange/posichain-gosdk/pkg/rpc/eth"
+	"github.com/PositionExchange/posichain-gosdk/pkg/store"
+	"github.com/PositionExchange/posichain-gosdk/pkg/transaction"
 	"github.com/PositionExchange/posichain/accounts"
-	"github.com/harmony-one/go-sdk/pkg/address"
-	"github.com/harmony-one/go-sdk/pkg/common"
-	"github.com/harmony-one/go-sdk/pkg/rpc"
-	rpcEth "github.com/harmony-one/go-sdk/pkg/rpc/eth"
-	"github.com/harmony-one/go-sdk/pkg/store"
-	"github.com/harmony-one/go-sdk/pkg/transaction"
 	"github.com/spf13/cobra"
 )
 

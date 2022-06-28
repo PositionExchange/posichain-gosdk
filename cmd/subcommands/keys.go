@@ -4,8 +4,8 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"github.com/harmony-one/go-sdk/pkg/sharding"
-	"github.com/harmony-one/go-sdk/pkg/validation"
+	"github.com/PositionExchange/posichain-gosdk/pkg/sharding"
+	"github.com/PositionExchange/posichain-gosdk/pkg/validation"
 	errors2 "github.com/pkg/errors"
 	"io/ioutil"
 	"os"
@@ -16,12 +16,12 @@ import (
 	"github.com/tyler-smith/go-bip39"
 	"golang.org/x/crypto/ssh/terminal"
 
-	"github.com/harmony-one/go-sdk/pkg/account"
-	c "github.com/harmony-one/go-sdk/pkg/common"
-	"github.com/harmony-one/go-sdk/pkg/keys"
-	"github.com/harmony-one/go-sdk/pkg/ledger"
-	"github.com/harmony-one/go-sdk/pkg/mnemonic"
-	"github.com/harmony-one/go-sdk/pkg/store"
+	"github.com/PositionExchange/posichain-gosdk/pkg/account"
+	c "github.com/PositionExchange/posichain-gosdk/pkg/common"
+	"github.com/PositionExchange/posichain-gosdk/pkg/keys"
+	"github.com/PositionExchange/posichain-gosdk/pkg/ledger"
+	"github.com/PositionExchange/posichain-gosdk/pkg/mnemonic"
+	"github.com/PositionExchange/posichain-gosdk/pkg/store"
 )
 
 const (

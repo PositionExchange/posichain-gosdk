@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/PositionExchange/posichain-gosdk/pkg/governance"
+	"github.com/PositionExchange/posichain-gosdk/pkg/store"
 	"github.com/PositionExchange/posichain/accounts"
-	"github.com/harmony-one/go-sdk/pkg/governance"
-	"github.com/harmony-one/go-sdk/pkg/store"
 	"github.com/spf13/cobra"
 )
 

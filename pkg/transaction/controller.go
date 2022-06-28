@@ -7,6 +7,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/PositionExchange/posichain-gosdk/pkg/address"
+	"github.com/PositionExchange/posichain-gosdk/pkg/common"
+	"github.com/PositionExchange/posichain-gosdk/pkg/ledger"
+	"github.com/PositionExchange/posichain-gosdk/pkg/rpc"
 	"github.com/PositionExchange/posichain/accounts"
 	"github.com/PositionExchange/posichain/accounts/keystore"
 	"github.com/PositionExchange/posichain/common/denominations"
@@ -14,10 +18,6 @@ import (
 	"github.com/PositionExchange/posichain/numeric"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/harmony-one/go-sdk/pkg/address"
-	"github.com/harmony-one/go-sdk/pkg/common"
-	"github.com/harmony-one/go-sdk/pkg/ledger"
-	"github.com/harmony-one/go-sdk/pkg/rpc"
 )
 
 var (

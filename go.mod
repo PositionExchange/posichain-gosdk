@@ -1,4 +1,4 @@
-module github.com/harmony-one/go-sdk
+module github.com/PositionExchange/posichain-gosdk
 
 go 1.14
 

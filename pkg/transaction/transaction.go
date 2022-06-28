@@ -3,10 +3,10 @@ package transaction
 import (
 	"math/big"
 
+	"github.com/PositionExchange/posichain-gosdk/pkg/address"
+	"github.com/PositionExchange/posichain-gosdk/pkg/rpc"
 	"github.com/PositionExchange/posichain/core/types"
 	"github.com/PositionExchange/posichain/numeric"
-	"github.com/harmony-one/go-sdk/pkg/address"
-	"github.com/harmony-one/go-sdk/pkg/rpc"
 )
 
 // NewTransaction - create a new Transaction based on supplied params

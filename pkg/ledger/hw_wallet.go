@@ -11,11 +11,11 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/sha3"
 
+	"github.com/PositionExchange/posichain-gosdk/pkg/address"
 	"github.com/PositionExchange/posichain/core/types"
 	staking "github.com/PositionExchange/posichain/staking/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/harmony-one/go-sdk/pkg/address"
 )
 
 var (

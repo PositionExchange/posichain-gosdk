@@ -5,9 +5,9 @@ import (
 	"os"
 	"path"
 
-	cmd "github.com/harmony-one/go-sdk/cmd/subcommands"
+	cmd "github.com/PositionExchange/posichain-gosdk/cmd/subcommands"
 	// Need this side effect
-	_ "github.com/harmony-one/go-sdk/pkg/store"
+	_ "github.com/PositionExchange/posichain-gosdk/pkg/store"
 	"github.com/spf13/cobra"
 )
 

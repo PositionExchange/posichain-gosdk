@@ -9,9 +9,9 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/PositionExchange/posichain-gosdk/pkg/address"
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/harmony-one/go-sdk/pkg/address"
 	"io"
 	"io/ioutil"
 	"math/big"
@@ -20,11 +20,11 @@ import (
 	"strings"
 
 	bls_core "github.com/PositionExchange/bls/ffi/go/bls"
+	"github.com/PositionExchange/posichain-gosdk/pkg/common"
+	"github.com/PositionExchange/posichain-gosdk/pkg/validation"
 	"github.com/PositionExchange/posichain/crypto/bls"
 	"github.com/PositionExchange/posichain/crypto/hash"
 	"github.com/PositionExchange/posichain/staking/types"
-	"github.com/harmony-one/go-sdk/pkg/common"
-	"github.com/harmony-one/go-sdk/pkg/validation"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
