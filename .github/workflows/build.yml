@@ -21,7 +21,6 @@ jobs:
         with:
           go-version: 1.16.5
 
-
       - name: Checkout go-sdk code
         uses: actions/checkout@v3
         with:
@@ -35,7 +34,7 @@ jobs:
           echo ${GOPATH}
           echo ${GOROOT}
         env:
-          GOPATH: ${{ env.GITHUB_WORKSPACE }}/go
+          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
 
       - name: Checkout dependence repo (mcl)
         uses: actions/checkout@v3
@@ -59,33 +58,32 @@ jobs:
           token: ${{ secrets.TMP_ACCESS_TOKEN }} # TODO remove token when posichain is public
 
 
-
       - name: Get latest version and release
         run: |
           VERSION=$(git tag -l --sort=-v:refname | head -n 1 | tr -d v)
           RELEASE=$(git describe --long | cut -f2 -d-)
           echo "build_version=$VERSION" >> $GITHUB_ENV
           echo "build_release=$RELEASE" >> $GITHUB_ENV
-        working-directory: ${{ env.GITHUB_WORKSPACE }}/go/src/github.com/PositionExchange/posichain-gosdk
+        working-directory: /home/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk
         env:
-          GOPATH: ${{ env.GITHUB_WORKSPACE }}/go
+          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
 
       - name: Build hmy binary for Linux
         if: matrix.os == 'ubuntu-18.04'
         run: |
           make static
-        working-directory: ${{ env.GITHUB_WORKSPACE }}/go/src/github.com/PositionExchange/posichain-gosdk
+        working-directory: /home/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk
         env:
-          GOPATH: ${{ env.GITHUB_WORKSPACE }}/go
+          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: hmy
-          path: ${{ env.GITHUB_WORKSPACE }}/go/src/github.com/PositionExchange/posichain-gosdk/dist/*
+          path: /home/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk/dist/*
           retention-days: 1
         env:
-          GOPATH: ${{ env.GITHUB_WORKSPACE }}/go
+          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
 
   # build-arm64:
   #   name: Build hmy binary
@@ -186,9 +184,9 @@ jobs:
           echo "build_version=$VERSION" >> $GITHUB_ENV
           echo "build_version_long=$VERSION_LONG" >> $GITHUB_ENV
           echo "build_release=$RELEASE" >> $GITHUB_ENV
-        working-directory: ${{ env.GITHUB_WORKSPACE }}/go/src/github.com/PositionExchange/posichain-gosdk
+        working-directory: /home/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk
         env:
-          GOPATH: ${{ env.GITHUB_WORKSPACE }}/go
+          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
 
       - name: Download artifact
         uses: actions/download-artifact@v2
@@ -218,7 +216,7 @@ jobs:
         run: |
           touch ./tag_message.md
           echo -e "$TAG_SHA\n\nThe released version: $build_version_long" >> ./tag_message.md
-        working-directory: ${{ env.GITHUB_WORKSPACE }}/go/src/github.com/PositionExchange/posichain-gosdk
+        working-directory: /home/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk
 
 
 
@@ -232,7 +230,7 @@ jobs:
           release_name: Mainnet Release ${{ env.build_version }}
           draft: true
           prerelease: false
-          body_path: ${{ env.GITHUB_WORKSPACE }}/go/src/github.com/PositionExchange/posichain-gosdk/tag_message.md
+          body_path: /home/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk/tag_message.md
 
 
 
@@ -271,7 +269,7 @@ jobs:
       #   uses: actions/upload-release-asset@v1
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     GOPATH: ${{ env.GITHUB_WORKSPACE }}/go
+      #     GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
       #   with:
       #     upload_url: ${{ steps.create_release.outputs.upload_url }}
       #     asset_path: ./hmy-arm64
