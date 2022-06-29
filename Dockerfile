@@ -14,4 +14,4 @@ RUN ldconfig
 WORKDIR /workspace/sdk
 COPY . .
 RUN make
-ENTRYPOINT ./hmy
+ENTRYPOINT ./psc

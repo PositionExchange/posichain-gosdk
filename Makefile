@@ -7,10 +7,10 @@ built_by := ${USER}@position.exchange
 flags := -gcflags="all=-N -l -c 2"
 ldflags := -X main.version=v${version} -X main.commit=${commit}
 ldflags += -X main.builtAt=${built_at} -X main.builtBy=${built_by}
-cli := ./dist/hmy
-upload-path-darwin := 's3://pub.harmony.one/release/darwin-x86_64/mainnet/hmy'
-upload-path-linux := 's3://pub.harmony.one/release/linux-x86_64/mainnet/hmy'
-upload-path-linux-version := 's3://pub.harmony.one/release/linux-x86_64/mainnet/hmy_version'
+cli := ./dist/psc
+upload-path-darwin := 's3://pub.harmony.one/release/darwin-x86_64/mainnet/psc'
+upload-path-linux := 's3://pub.harmony.one/release/linux-x86_64/mainnet/psc'
+upload-path-linux-version := 's3://pub.harmony.one/release/linux-x86_64/mainnet/psc_version'
 uname := $(shell uname)
 
 env := GO111MODULE=on
@@ -20,17 +20,17 @@ export CGO_LDFLAGS=-L$(DIR)/dist/lib -Wl,-rpath -Wl,\$ORIGIN/lib
 
 all:
 	source $(shell go env GOPATH)/src/github.com/PositionExchange/posichain-gosdk/scripts/setup_bls_build_flags.sh && $(env) go build -o $(cli) -ldflags="$(ldflags)" cmd/main.go
-	cp $(cli) hmy
+	cp $(cli) psc
 
 static:
 	make -C $(shell go env GOPATH)/src/github.com/PositionExchange/mcl
 	make -C $(shell go env GOPATH)/src/github.com/PositionExchange/bls minimised_static BLS_SWAP_G=1
 	source $(shell go env GOPATH)/src/github.com/PositionExchange/posichain-gosdk/scripts/setup_bls_build_flags.sh && $(env) go build -o $(cli) -ldflags="$(ldflags) -w -extldflags \"-static\"" cmd/main.go
-	cp $(cli) hmy
+	cp $(cli) psc
 
 debug:
 	source $(shell go env GOPATH)/src/github.com/PositionExchange/posichain-gosdk/scripts/setup_bls_build_flags.sh && $(env) go build $(flags) -o $(cli) -ldflags="$(ldflags)" cmd/main.go
-	cp $(cli) hmy
+	cp $(cli) psc
 
 install:all
 	cp $(cli) ~/.local/bin
@@ -46,7 +46,7 @@ test-rpc:
 # Notice assumes you have correct uploading credentials
 upload-darwin:all
 ifeq (${uname}, Darwin)
-	aws --profile upload s3 cp ./hmy ${upload-path-darwin}
+	aws --profile upload s3 cp ./psc ${upload-path-darwin}
 else
 	@echo "Wrong operating system for target upload"
 endif
@@ -54,9 +54,9 @@ endif
 # Only the linux build will upload the CLI version
 upload-linux:static
 ifeq (${uname}, Linux)
-	aws --profile upload s3 cp ./hmy ${upload-path-linux}
-	./hmy version &> ./hmy_version
-	aws --profile upload s3 cp ./hmy_version ${upload-path-linux-version}
+	aws --profile upload s3 cp ./psc ${upload-path-linux}
+	./psc version &> ./psc_version
+	aws --profile upload s3 cp ./psc_version ${upload-path-linux-version}
 else
 	@echo "Wrong operating system for target upload"
 endif

@@ -28,13 +28,13 @@ var (
 )
 
 func init() {
-	if _, enabled := os.LookupEnv("HMY_RPC_DEBUG"); enabled != false {
+	if _, enabled := os.LookupEnv("PSC_RPC_DEBUG"); enabled != false {
 		DebugRPC = true
 	}
-	if _, enabled := os.LookupEnv("HMY_TX_DEBUG"); enabled != false {
+	if _, enabled := os.LookupEnv("PSC_TX_DEBUG"); enabled != false {
 		DebugTransaction = true
 	}
-	if _, enabled := os.LookupEnv("HMY_ALL_DEBUG"); enabled != false {
+	if _, enabled := os.LookupEnv("PSC_ALL_DEBUG"); enabled != false {
 		EnableAllVerbose()
 	}
 }
