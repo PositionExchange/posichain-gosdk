@@ -2,7 +2,7 @@ SHELL := /bin/bash
 version := $(shell git rev-list --count HEAD)
 commit := $(shell git describe --always --long --dirty)
 built_at := $(shell date +%FT%T%z)
-built_by := ${USER}@harmony.one
+built_by := ${USER}@position.exchange
 
 flags := -gcflags="all=-N -l -c 2"
 ldflags := -X main.version=v${version} -X main.commit=${commit}
@@ -19,17 +19,17 @@ DIR := ${CURDIR}
 export CGO_LDFLAGS=-L$(DIR)/dist/lib -Wl,-rpath -Wl,\$ORIGIN/lib
 
 all:
-	source ./scripts/setup_bls_build_flags.sh && $(env) go build -o $(cli) -ldflags="$(ldflags)" cmd/main.go
+	source $(shell go env GOPATH)/src/github.com/PositionExchange/posichain-gosdk/scripts/setup_bls_build_flags.sh && $(env) go build -o $(cli) -ldflags="$(ldflags)" cmd/main.go
 	cp $(cli) hmy
 
 static:
-	make -C ./mcl
-	make -C ./bls minimised_static BLS_SWAP_G=1
-	source ./scripts/setup_bls_build_flags.sh && $(env) go build -o $(cli) -ldflags="$(ldflags) -w -extldflags \"-static\"" cmd/main.go
+	make -C $(shell go env GOPATH)/src/github.com/PositionExchange/mcl
+	make -C $(shell go env GOPATH)/src/github.com/PositionExchange/bls minimised_static BLS_SWAP_G=1
+	source $(shell go env GOPATH)/src/github.com/PositionExchange/posichain-gosdk/scripts/setup_bls_build_flags.sh && $(env) go build -o $(cli) -ldflags="$(ldflags) -w -extldflags \"-static\"" cmd/main.go
 	cp $(cli) hmy
 
 debug:
-	source ./scripts/setup_bls_build_flags.sh && $(env) go build $(flags) -o $(cli) -ldflags="$(ldflags)" cmd/main.go
+	source $(shell go env GOPATH)/src/github.com/PositionExchange/posichain-gosdk/scripts/setup_bls_build_flags.sh && $(env) go build $(flags) -o $(cli) -ldflags="$(ldflags)" cmd/main.go
 	cp $(cli) hmy
 
 install:all
