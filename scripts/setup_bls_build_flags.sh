@@ -1,8 +1,27 @@
 # no shebang; to be sourced from other scripts
 
-export OPENSSL_DIR="/usr/local/opt/openssl"
-export MCL_DIR="/workspace/mcl"
-export BLS_DIR="/workspace/bls"
+unset -v progdir
+case "${0}" in
+*/*) progdir="${0%/*}";;
+*) progdir=.;;
+esac
+
+case "${BASE_PATH+set}" in
+"")
+   unset -v gopath
+   gopath=$(go env GOPATH)
+   # BASE_PATH is the common root directory of all harmony repos
+   BASE_PATH="${gopath%%:*}/src/github.com/PositionExchange"
+   if [ ! -d $BASE_PATH ]; then
+      # "env pwd" uses external pwd(1) implementation and not the Bash built-in,
+      # which does not fully dereference symlinks.
+      BASE_PATH=$(cd $progdir/../.. && env pwd)
+   fi
+   ;;
+esac
+: ${OPENSSL_DIR="/usr/local/opt/openssl"}
+: ${MCL_DIR="${BASE_PATH}/mcl"}
+: ${BLS_DIR="${BASE_PATH}/bls"}
 export CGO_CFLAGS="-I${BLS_DIR}/include -I${MCL_DIR}/include"
 export CGO_LDFLAGS="-L${BLS_DIR}/lib"
 export LD_LIBRARY_PATH=${BLS_DIR}/lib:${MCL_DIR}/lib
