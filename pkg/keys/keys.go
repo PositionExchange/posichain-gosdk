@@ -33,7 +33,7 @@ func ListKeys(keystoreDir string) {
 	ks := keystore.NewKeyStore(hmyCLIDir, scryptN, scryptP)
 	// keystore.KeyStore
 	allAccounts := ks.Accounts()
-	fmt.Printf("Harmony Address:%s File URL:\n", strings.Repeat(" ", ethCommon.AddressLength*2))
+	fmt.Printf("Posichain Address:%s File URL:\n", strings.Repeat(" ", ethCommon.AddressLength*2))
 	for _, account := range allAccounts {
 		fmt.Printf("%s\t\t %s\n", address.ToBech32(account.Address), account.URL)
 	}

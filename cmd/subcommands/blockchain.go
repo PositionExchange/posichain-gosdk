@@ -40,9 +40,9 @@ Look up information about delegation
 
 	cmdBlockchain := &cobra.Command{
 		Use:   "blockchain",
-		Short: "Interact with the Harmony.one Blockchain",
+		Short: "Interact with the Posichain",
 		Long: `
-Query Harmony's blockchain for completed transaction, historic records
+Query for completed transaction, historic records
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.Help()
@@ -77,7 +77,7 @@ High level information about each transaction for given account
 
 	subCommands := []*cobra.Command{{
 		Use:   "block-by-number",
-		Short: "Get a harmony blockchain block by block number",
+		Short: "Get a block by block number",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			noLatest = true
@@ -92,9 +92,9 @@ High level information about each transaction for given account
 		},
 	}, {
 		Use:   "protocol-version",
-		Short: "The version of the Harmony Protocol",
+		Short: "The version of the Posichain Protocol",
 		Long: `
-Query Harmony's blockchain for high level metrics, queries
+Query for high level metrics, queries
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return request(rpc.Method.ProtocolVersion, []interface{}{})

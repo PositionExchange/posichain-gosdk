@@ -335,7 +335,7 @@ func init() {
 		Short: "Create and send a transaction",
 		Args:  cobra.ExactArgs(0),
 		Long: `
-Create a transaction, sign it, and send off to the Harmony blockchain
+Create a transaction, sign it, and send off to the Posichain
 `,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if offlineSign {
@@ -448,7 +448,7 @@ Get Nonce From a Account
 		Short: "Send a Offline Signed transaction",
 		Args:  cobra.ExactArgs(0),
 		Long: `
-Send a offline signed to the Harmony blockchain
+Send a offline signed to the Posichain
 `,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if givenFilePath == "" {

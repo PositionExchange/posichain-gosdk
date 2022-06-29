@@ -2,12 +2,12 @@
 
 set -ieu
 
-source ../harmony/scripts/setup_bls_build_flags.sh
+source ../posichain/scripts/setup_bls_build_flags.sh
 
 sender='one1yc06ghr2p8xnl2380kpfayweguuhxdtupkhqzw'
 receiver='one1q6gkzcap0uruuu8r6sldxuu47pd4ww9w9t7tg6'
-shard_zero='https://api.s0.b.hmny.io/'
-shard_one='https://api.s0.b.hmny.io/'
+shard_zero='https://s0.t.posichain.org/'
+shard_one='https://s0.t.posichain.org/'
 
 direct_node='http://52.27.34.100:9500'
 
@@ -21,7 +21,7 @@ for iter in $(seq 100); do
     value=$(c "${iter}/100")
     bump=$(c "${value}+${rand}")
     amount=$(printf "%.2f" ${bump})
-    ./hmy --node=${shard_zero} \
+    ./psc --node=${shard_zero} \
 	  transfer --from ${sender} --to ${receiver} \
 	  --from-shard 0 --to-shard 0 --amount ${amount} \
 	  --passphrase='' &

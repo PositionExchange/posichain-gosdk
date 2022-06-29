@@ -123,7 +123,7 @@ func keysSub() []*cobra.Command {
 
 	cmdLocation := &cobra.Command{
 		Use:   "location",
-		Short: "Show where `hmy` keeps accounts & their keys",
+		Short: "Show where `psc` keeps accounts & their keys",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			fmt.Println(store.DefaultLocation())
 			return nil
@@ -147,7 +147,7 @@ func keysSub() []*cobra.Command {
 				Passphrase: passphrase,
 			}
 			if recoverFromMnemonic {
-				fmt.Fprintf(os.Stderr, "deprecated method: use `./hmy keys recover-from-mnemonic` instead.\n")
+				fmt.Fprintf(os.Stderr, "deprecated method: use `./psc keys recover-from-mnemonic` instead.\n")
 				fmt.Println("Enter mnemonic to recover keys from")
 				scanner := bufio.NewScanner(os.Stdin)
 				scanner.Scan()
@@ -346,7 +346,7 @@ func keysSub() []*cobra.Command {
 			if shardCount <= 0 {
 				fmt.Printf("shard-count not provided, fetch node info instead")
 				if err := validation.ValidateNodeConnection(node); err != nil {
-					fmt.Fprintf(os.Stderr, "Cannot connect to node %v, using Harmony mainnet endpoint %v\n",
+					fmt.Fprintf(os.Stderr, "Cannot connect to node %v, using mainnet endpoint %v\n",
 						node, defaultMainnetEndpoint)
 					node = defaultMainnetEndpoint
 				}

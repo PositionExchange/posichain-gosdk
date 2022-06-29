@@ -7,10 +7,10 @@ import (
 )
 
 const (
-	hmyDocsDir             = "hmy-docs"
+	hmyDocsDir             = "psc-docs"
 	defaultNodeAddr        = "http://localhost:9500"
 	defaultRpcPrefix       = "hmy"
-	defaultMainnetEndpoint = "https://api.s0.t.hmny.io/"
+	defaultMainnetEndpoint = "https://s0.posichain.org/"
 )
 
 var (
@@ -30,92 +30,92 @@ Note:
 Examples:
 
 %s
-./hmy --node=[NODE] balances <SOME_ONE_ADDRESS>
+./psc --node=[NODE] balances <SOME_ONE_ADDRESS>
 
 %s
-./hmy --node=[NODE] blockchain transaction-by-hash <SOME_TX_HASH>
+./psc --node=[NODE] blockchain transaction-by-hash <SOME_TX_HASH>
 
 %s
-./hmy keys list
+./psc keys list
 
 %s
-./hmy --node=[NODE] transfer \
+./psc --node=[NODE] transfer \
     --from <SOME_ONE_ADDRESS> --to <SOME_ONE_ADDRESS> \
     --from-shard 0 --to-shard 1 --amount 200 --passphrase
 
 %s
-./hmy --node=[NODE] transfer --file <PATH_TO_JSON_FILE>
+./psc --node=[NODE] transfer --file <PATH_TO_JSON_FILE>
 Check README for details on json file format.
 
 %s
-./hmy --node=[NODE] blockchain transaction-receipt <SOME_TX_HASH>
+./psc --node=[NODE] blockchain transaction-receipt <SOME_TX_HASH>
 
 %s
-./hmy keys recover-from-mnemonic <ACCOUNT_NAME> --passphrase
+./psc keys recover-from-mnemonic <ACCOUNT_NAME> --passphrase
 
 %s
-./hmy keys import-ks <PATH_TO_KEYSTORE_JSON>
+./psc keys import-ks <PATH_TO_KEYSTORE_JSON>
 
 %s
-./hmy keys import-private-key <secp256k1_PRIVATE_KEY>
+./psc keys import-private-key <secp256k1_PRIVATE_KEY>
 
 %s
-./hmy keys export-private-key <ACCOUNT_ADDRESS> --passphrase
+./psc keys export-private-key <ACCOUNT_ADDRESS> --passphrase
 
 %s
-./hmy keys generate-bls-key --bls-file-path <PATH_FOR_BLS_KEY_FILE>
+./psc keys generate-bls-key --bls-file-path <PATH_FOR_BLS_KEY_FILE>
 
 %s
-./hmy --node=[NODE] staking create-validator --amount 10 --validator-addr <SOME_ONE_ADDRESS> \
+./psc --node=[NODE] staking create-validator --amount 10 --validator-addr <SOME_ONE_ADDRESS> \
     --bls-pubkeys <BLS_KEY_1>,<BLS_KEY_2>,<BLS_KEY_3> \
     --identity foo --details bar --name baz --max-change-rate 0.1 --max-rate 0.1 --max-total-delegation 10 \
-    --min-self-delegation 10 --rate 0.1 --security-contact Leo  --website harmony.one --passphrase
+    --min-self-delegation 10 --rate 0.1 --security-contact Leo  --website posichain.org --passphrase
 
 %s
-./hmy --node=[NODE] staking edit-validator \
+./psc --node=[NODE] staking edit-validator \
     --validator-addr <SOME_ONE_ADDRESS> --identity foo --details bar \
-    --name baz --security-contact EK --website harmony.one \
+    --name baz --security-contact EK --website posichain.org \
     --min-self-delegation 0 --max-total-delegation 10 --rate 0.1\
     --add-bls-key <SOME_BLS_KEY> --remove-bls-key <OTHER_BLS_KEY> --passphrase
 
 %s
-./hmy --node=[NODE] staking delegate \
+./psc --node=[NODE] staking delegate \
     --delegator-addr <SOME_ONE_ADDRESS> --validator-addr <VALIDATOR_ONE_ADDRESS> \
     --amount 10 --passphrase
 
 %s
-./hmy --node=[NODE] staking undelegate \
+./psc --node=[NODE] staking undelegate \
     --delegator-addr <SOME_ONE_ADDRESS> --validator-addr <VALIDATOR_ONE_ADDRESS> \
     --amount 10 --passphrase
 
 %s
-./hmy --node=[NODE] staking collect-rewards \
+./psc --node=[NODE] staking collect-rewards \
     --delegator-addr <SOME_ONE_ADDRESS> --passphrase
 
 %s
-./hmy --node=[NODE] blockchain validator elected
+./psc --node=[NODE] blockchain validator elected
 
 %s
-./hmy --node=[NODE] blockchain utility-metrics
+./psc --node=[NODE] blockchain utility-metrics
 
 %s
-./hmy --node=[NODE] failures staking
+./psc --node=[NODE] failures staking
 
 %s
-./hmy --node=[NODE] utility shard-for-bls <BLS_PUBLIC_KEY>
+./psc --node=[NODE] utility shard-for-bls <BLS_PUBLIC_KEY>
 
 %s
-./hmy governance list-space
+./psc governance list-space
 
 %s
-./hmy governance list-proposal --space=[space key, example: staking-testnet]
+./psc governance list-proposal --space=[space key, example: staking-testnet]
 
 %s
-./hmy governance view-proposal --proposal=[proposal hash]
+./psc governance view-proposal --proposal=[proposal hash]
 
 %s
-./hmy governance new-proposal --proposal-yaml=[file path] --key=[account address]
-PS: key must first use (hmy keys import-private-key) to import
+./psc governance new-proposal --proposal-yaml=[file path] --key=[account address]
+PS: key must first use (psc keys import-private-key) to import
 Yaml example(time is in UTC timezone):
 space: staking-testnet
 start: 2020-04-16 21:45:12
@@ -129,8 +129,8 @@ body: |
   you can write mutli line
 
 %s
-./hmy governance vote-proposal --proposal=[proposal hash] --choice=[your choise text, eg: yes] --key=[account address]
-PS: key must first use (hmy keys import-private-key) to import
+./psc governance vote-proposal --proposal=[proposal hash] --choice=[your choise text, eg: yes] --key=[account address]
+PS: key must first use (psc keys import-private-key) to import
 `,
 		g("1.  Check account balance on given chain"),
 		g("2.  Check sent transaction"),

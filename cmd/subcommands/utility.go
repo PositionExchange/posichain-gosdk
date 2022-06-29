@@ -15,7 +15,7 @@ import (
 func init() {
 	cmdUtilities := &cobra.Command{
 		Use:   "utility",
-		Short: "common harmony blockchain utilities",
+		Short: "common posichain utilities",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.Help()
 			return nil

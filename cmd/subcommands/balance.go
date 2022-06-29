@@ -16,7 +16,7 @@ func init() {
 	cmdQuery := &cobra.Command{
 		Use:     "balances",
 		Short:   "Check account balance on all shards",
-		Long:    "Query for the latest account balance given a Harmony Address",
+		Long:    "Query for the latest account balance given an address",
 		Args:    cobra.ExactArgs(1),
 		PreRunE: validateAddress,
 		RunE: func(cmd *cobra.Command, args []string) error {

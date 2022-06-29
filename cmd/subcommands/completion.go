@@ -12,9 +12,9 @@ func init() {
 		Short: "Generates bash completion scripts",
 		Long: `To load completion, run:
 
-    . <(hmy completion)
+    . <(psc completion)
 
-Add the line to your ~/.bashrc to enable completiony for each bash session.
+Add the line to your ~/.bashrc to enable completion for each bash session.
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			RootCmd.GenBashCompletion(os.Stdout)

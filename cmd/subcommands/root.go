@@ -32,7 +32,7 @@ var (
 	rpcPrefix       string
 	keyStoreDir     string
 	givenFilePath   string
-	endpoint        = regexp.MustCompile(`https://api\.s[0-9]\..*\.hmny\.io`)
+	endpoint        = regexp.MustCompile(`https://s[0-9]\..*\.posichain\.org`)
 	request         = func(method string, params []interface{}) error {
 		if !noLatest {
 			params = append(params, "latest")
@@ -51,8 +51,8 @@ var (
 	}
 	// RootCmd is single entry point of the CLI
 	RootCmd = &cobra.Command{
-		Use:          "hmy",
-		Short:        "Harmony blockchain",
+		Use:          "psc",
+		Short:        "Posichain",
 		SilenceUsage: true,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			if verbose {
@@ -69,17 +69,8 @@ var (
 			if strings.HasPrefix(node, "https://") || strings.HasPrefix(node, "http://") ||
 				strings.HasPrefix(node, "ws://") {
 				//No op, already has protocol, respect protocol default ports.
-			} else if strings.HasPrefix(node, "api") || strings.HasPrefix(node, "ws") {
-				node = "https://" + node
 			} else {
-				switch URLcomponents := strings.Split(node, ":"); len(URLcomponents) {
-				case 1:
-					node = "http://" + node + ":9500"
-				case 2:
-					node = "http://" + node
-				default:
-					node = node
-				}
+				return errors.New("node must start with protocol http(s) or ws")
 			}
 
 			if targetChain == "" {
@@ -95,8 +86,6 @@ var (
 					}
 				} else if endpoint.Match([]byte(node)) {
 					chainName = endpointToChainID(node)
-				} else if strings.Contains(node, "api.harmony.one") { //TODO replace by Posichain
-					chainName = chainIDWrapper{chainID: &common.Chain.MainNet}
 				} else {
 					chainName = chainIDWrapper{chainID: &common.Chain.TestNet}
 				}
@@ -111,9 +100,9 @@ var (
 			return nil
 		},
 		Long: fmt.Sprintf(`
-CLI interface to the Harmony blockchain
+CLI interface to the Posichain
 
-%s`, g("Invoke 'hmy cookbook' for examples of the most common, important usages")),
+%s`, g("Invoke 'psc cookbook' for examples of the most common, important usages")),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.Help()
 			return nil
@@ -122,7 +111,7 @@ CLI interface to the Harmony blockchain
 )
 
 func init() {
-	vS := "dump out debug information, same as env var HMY_ALL_DEBUG=true"
+	vS := "dump out debug information, same as env var PSC_ALL_DEBUG=true"
 	RootCmd.PersistentFlags().BoolVarP(&verbose, "verbose", "v", false, vS)
 	RootCmd.PersistentFlags().StringVarP(&node, "node", "n", defaultNodeAddr, "<host>")
 	RootCmd.PersistentFlags().StringVarP(&rpcPrefix, "rpc-prefix", "r", defaultRpcPrefix, "<rpc>")
@@ -138,16 +127,16 @@ func init() {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var docNode, docNet string
 			if node == defaultNodeAddr || chainName.chainID == &common.Chain.MainNet {
-				docNode = `https://api.s0.t.hmny.io` //TODO replace by Posichain
+				docNode = `https://s0.posichain.org`
 				docNet = `Mainnet`
 			} else if chainName.chainID == &common.Chain.TestNet {
-				docNode = `https://api.s0.b.hmny.io` //TODO replace by Posichain
+				docNode = `https://s0.t.posichain.org`
 				docNet = `Long-Running Testnet`
 			} else if chainName.chainID == &common.Chain.DevNet {
-				docNode = `https://api.s0.d.hmny.io` //TODO replace by Posichain
+				docNode = `https://s0.d.posichain.org`
 				docNet = `Long-Running Devnet`
 			} else if chainName.chainID == &common.Chain.StressNet {
-				docNode = `https://api.s0.stn.hmny.io` //TODO replace by Posichain
+				docNode = `https://s0.s.posichain.org`
 				docNet = `Stress Testing Network`
 			}
 			fmt.Print(strings.ReplaceAll(strings.ReplaceAll(cookbookDoc, `[NODE]`, docNode), `[NETWORK]`, docNet))
@@ -172,7 +161,7 @@ func init() {
 var (
 	// VersionWrapDump meant to be set from main.go
 	VersionWrapDump = ""
-	cookbook        = color.GreenString("hmy cookbook")
+	cookbook        = color.GreenString("psc cookbook")
 	versionLink     = "https://harmony.one/hmycli_ver"
 	versionFormat   = regexp.MustCompile("v[0-9]+-[a-z0-9]{7}")
 )
@@ -206,17 +195,13 @@ func Execute() {
 
 func endpointToChainID(nodeAddr string) chainIDWrapper {
 	if strings.Contains(nodeAddr, ".t.") {
-		return chainIDWrapper{chainID: &common.Chain.MainNet}
-	} else if strings.Contains(nodeAddr, ".b.") {
 		return chainIDWrapper{chainID: &common.Chain.TestNet}
 	} else if strings.Contains(nodeAddr, ".d.") {
 		return chainIDWrapper{chainID: &common.Chain.DevNet}
-	} else if strings.Contains(nodeAddr, ".stn.") {
+	} else if strings.Contains(nodeAddr, ".s.") {
 		return chainIDWrapper{chainID: &common.Chain.StressNet}
-	} else if strings.Contains(nodeAddr, ".dry.") {
-		return chainIDWrapper{chainID: &common.Chain.MainNet}
 	}
-	return chainIDWrapper{chainID: &common.Chain.TestNet}
+	return chainIDWrapper{chainID: &common.Chain.MainNet}
 }
 
 func validateAddress(cmd *cobra.Command, args []string) error {

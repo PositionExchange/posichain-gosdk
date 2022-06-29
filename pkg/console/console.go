@@ -57,9 +57,9 @@ type Config struct {
 	Prompter prompt.UserPrompter  // Input prompter to allow interactive user feedback (defaults to TerminalPrompter)
 	Printer  io.Writer            // Output writer to serialize any display strings to (defaults to os.Stdout)
 	Preload  []string             // Absolute paths to JavaScript files to preload
-	NodeUrl  string               // Hmy Node url
-	ShardId  int                  // Hmy Shard ID
-	Net      string               // Hmy  Network
+	NodeUrl  string               // PSC Node url
+	ShardId  int                  // PSC Shard ID
+	Net      string               // PSC  Network
 }
 
 // Console is a JavaScript interpreted runtime environment. It is a fully fledged
@@ -73,9 +73,9 @@ type Console struct {
 	histPath string               // Absolute path to the console scrollback history
 	history  []string             // Scroll history maintained by the console
 	printer  io.Writer            // Output writer to serialize any display strings to
-	nodeUrl  string               // Hmy Node url
-	shardId  int                  // Hmy Shard ID
-	net      string               // Hmy  Network
+	nodeUrl  string               // PSC Node url
+	shardId  int                  // PSC Shard ID
+	net      string               // PSC  Network
 }
 
 // New initializes a JavaScript interpreted runtime environment and sets defaults
@@ -318,7 +318,7 @@ func (c *Console) AutoCompleteInput(line string, pos int) (string, []string, str
 // Welcome show summary of current Geth instance and some metadata about the
 // console's available modules.
 func (c *Console) Welcome() {
-	message := "Welcome to the Hmy JavaScript console!\n\n"
+	message := "Welcome to the Posichain JavaScript console!\n\n"
 
 	// Print some generic Geth metadata
 	if res, err := c.jsre.Run(`

@@ -184,7 +184,7 @@ func confirmTx(networkHandler *rpc.HTTPMessenger, confirmWaitTime uint32, txHash
 			for _, txError := range transactionErrors {
 				fmt.Println(txError.Error().Error())
 			}
-			fmt.Println("Try increasing the `timeout` or look for the transaction receipt with `hmy blockchain transaction-receipt <txHash>`")
+			fmt.Println("Try increasing the `timeout` or look for the transaction receipt with `psc blockchain transaction-receipt <txHash>`")
 			return fmt.Errorf("could not confirm %s even after %d seconds", txHash, confirmWaitTime)
 		}
 		transactionErrors, _ := transaction.GetError(txHash, networkHandler)
@@ -846,7 +846,7 @@ func init() {
 		Use:   "staking",
 		Short: "newvalidator, editvalidator, delegate, undelegate or redelegate",
 		Long: `
-Create a staking transaction, sign it, and send off to the Harmony blockchain
+Create a staking transaction, sign it, and send off to the Posichain
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.Help()

@@ -200,7 +200,7 @@ func init() {
 		Short: "Create and send an Ethereum compatible transaction",
 		Args:  cobra.ExactArgs(0),
 		Long: `
-Create an Ethereum compatible transaction, sign it, and send off to the Harmony blockchain
+Create an Ethereum compatible transaction, sign it, and send off to the Posichain
 `,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if givenFilePath == "" {

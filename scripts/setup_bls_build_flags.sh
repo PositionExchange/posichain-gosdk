@@ -10,7 +10,7 @@ case "${BASE_PATH+set}" in
 "")
    unset -v gopath
    gopath=$(go env GOPATH)
-   # BASE_PATH is the common root directory of all harmony repos
+   # BASE_PATH is the common root directory of all posichain repos
    BASE_PATH="${gopath%%:*}/src/github.com/PositionExchange"
    if [ ! -d $BASE_PATH ]; then
       # "env pwd" uses external pwd(1) implementation and not the Bash built-in,
