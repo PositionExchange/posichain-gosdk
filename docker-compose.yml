@@ -2,6 +2,6 @@ services:
   sdk:
     build: .
     volumes:
-      - .:/workspace/sdk
+      - .:/src/github.com/PositionExchange/posichain-gosdk
     entrypoint: bash
     tty: true

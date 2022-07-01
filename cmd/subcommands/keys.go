@@ -36,7 +36,7 @@ var (
 	passphraseFilePath     string
 	passphrase             string
 	blsFilePath            string
-	blsShardID             uint32
+	blsShardID             int32
 	blsCount               uint32
 	shardCount             int
 	ppPrompt               = fmt.Sprintf(
@@ -357,35 +357,45 @@ func keysSub() []*cobra.Command {
 				shardCount = len(shardingStructure)
 			}
 
-			var blsKeys []*keys.BlsKey
-
-			for i := uint32(0); i < blsCount; i++ {
-				keyFilePath := blsFilePath
-				if blsFilePath != "" {
-					fmt.Printf("Enter absolute path for key #%d:\n", i+1)
-					fmt.Scanln(&keyFilePath)
+			var blsShardIDs []uint32
+			if blsShardID < 0 {
+				for i := 0; i < shardCount; i++ {
+					blsShardIDs = append(blsShardIDs, uint32(i))
 				}
-
-				passphrase, err := getPassphraseWithConfirm()
-				if err != nil {
-					return err
-				}
-
-				blsKey := &keys.BlsKey{
-					Passphrase: passphrase,
-					FilePath:   keyFilePath,
-				}
-				blsKeys = append(blsKeys, blsKey)
+			} else {
+				blsShardIDs = []uint32{uint32(blsShardID)}
 			}
 
-			return keys.GenMultiBlsKeys(blsKeys, shardCount, blsShardID)
+			var blsKeys []*keys.BlsKey
+			for _, shardId := range blsShardIDs {
+				for i := uint32(0); i < blsCount; i++ {
+					keyFilePath := blsFilePath
+					if blsFilePath != "" {
+						fmt.Printf("Enter absolute path for key #%d:\n", i+1)
+						fmt.Scanln(&keyFilePath)
+					}
+
+					passphrase, err := getPassphraseWithConfirm()
+					if err != nil {
+						return err
+					}
+
+					blsKey := &keys.BlsKey{
+						Passphrase: passphrase,
+						FilePath:   keyFilePath,
+						ShardId:    shardId,
+					}
+					blsKeys = append(blsKeys, blsKey)
+				}
+			}
+			return keys.GenMultiBlsKeys(blsKeys, shardCount)
 		},
 	}
 	cmdGenerateMultiBlsKeys.Flags().StringVar(&blsFilePath, "bls-file-path", "",
 		"absolute path of where to save encrypted bls private keys")
 	cmdGenerateMultiBlsKeys.Flags().BoolVar(&userProvidesPassphrase, "passphrase", false, ppPrompt)
 	cmdGenerateMultiBlsKeys.Flags().StringVar(&passphraseFilePath, "passphrase-file", "", "path to a file containing the passphrase")
-	cmdGenerateMultiBlsKeys.Flags().Uint32Var(&blsShardID, "shard", 0, "which shard to create bls keys for")
+	cmdGenerateMultiBlsKeys.Flags().Int32Var(&blsShardID, "shard", 0, "which shard to create bls keys for")
 	cmdGenerateMultiBlsKeys.Flags().IntVar(&shardCount, "shard-count", 0, "how many shard in total")
 	cmdGenerateMultiBlsKeys.Flags().Uint32Var(&blsCount, "count", 1, "how many bls keys to generate")
 

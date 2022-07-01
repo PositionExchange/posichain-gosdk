@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/PositionExchange/posichain-gosdk/pkg/address"
+	"github.com/PositionExchange/posichain-gosdk/pkg/validation"
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/ethereum/go-ethereum/crypto"
 	"io"
@@ -21,7 +22,6 @@ import (
 
 	bls_core "github.com/PositionExchange/bls/ffi/go/bls"
 	"github.com/PositionExchange/posichain-gosdk/pkg/common"
-	"github.com/PositionExchange/posichain-gosdk/pkg/validation"
 	"github.com/PositionExchange/posichain/crypto/bls"
 	"github.com/PositionExchange/posichain/crypto/hash"
 	"github.com/PositionExchange/posichain/staking/types"
@@ -36,6 +36,7 @@ type BlsKey struct {
 	PrivateKeyHex  string
 	Passphrase     string
 	FilePath       string
+	ShardId        uint32
 	ShardPublicKey *bls.SerializedPublicKey
 	OneAddress     string
 	HexAddress     string
@@ -71,8 +72,8 @@ func GenBlsKey(blsKey *BlsKey) error {
 }
 
 // GenMultiBlsKeys - generate multiple BLS keys for a given shard and node/network
-func GenMultiBlsKeys(blsKeys []*BlsKey, shardCount int, shardID uint32) error {
-	blsKeys, _, err := genBlsKeyForShard(blsKeys, shardCount, shardID)
+func GenMultiBlsKeys(blsKeys []*BlsKey, shardCount int) error {
+	blsKeys, _, err := genBlsKeyForShard(blsKeys, shardCount)
 	if err != nil {
 		return err
 	}
@@ -268,8 +269,8 @@ func writeBlsKeyToFile(blsKey *BlsKey) (string, error) {
 	hexAddr := crypto.PubkeyToAddress(sk.PublicKey)
 	oneAddress := address.ToBech32(hexAddr)
 	out := fmt.Sprintf(`
-{"one-address": "%s", "hex-address": "%s", "public-key" : "%s", "private-key": "%s", "encrypted-private-key": "%s", "encrypted-private-key-path": "%s"}`,
-		oneAddress, hexAddr.Hex(), blsKey.PublicKeyHex, blsKey.PrivateKeyHex, encryptedPrivateKeyStr, blsKey.FilePath)
+{"one-address": "%s", "hex-address": "%s", "shard-id": %d, "public-key": "%s", "private-key": "%s", "encrypted-private-key": "%s", "encrypted-private-key-path": "%s"}`,
+		oneAddress, hexAddr.Hex(), blsKey.ShardId, blsKey.PublicKeyHex, blsKey.PrivateKeyHex, encryptedPrivateKeyStr, blsKey.FilePath)
 
 	return out, nil
 }
@@ -341,12 +342,11 @@ func decryptRaw(data []byte, passphrase string) ([]byte, error) {
 	return plaintext, err
 }
 
-func genBlsKeyForShard(blsKeys []*BlsKey, shardCount int, shardID uint32) ([]*BlsKey, int, error) {
-	if !validation.ValidShardID(shardID, uint32(shardCount)) {
-		return blsKeys, shardCount, fmt.Errorf("shard count %d - supplied shard id %d isn't valid", shardCount, shardID)
-	}
-
+func genBlsKeyForShard(blsKeys []*BlsKey, shardCount int) ([]*BlsKey, int, error) {
 	for _, blsKey := range blsKeys {
+		if !validation.ValidShardID(blsKey.ShardId, uint32(shardCount)) {
+			return blsKeys, shardCount, fmt.Errorf("shard count %d - supplied shard id %d isn't valid", shardCount, blsKey.ShardId)
+		}
 		for {
 			blsKey.Initialize()
 			shardPubKey := new(bls.SerializedPublicKey)
@@ -354,7 +354,7 @@ func genBlsKeyForShard(blsKeys []*BlsKey, shardCount int, shardID uint32) ([]*Bl
 				return blsKeys, shardCount, err
 			}
 
-			if blsKeyMatchesShardID(shardPubKey, shardID, shardCount) {
+			if blsKeyMatchesShardID(shardPubKey, blsKey.ShardId, shardCount) {
 				blsKey.ShardPublicKey = shardPubKey
 				break
 			} else {

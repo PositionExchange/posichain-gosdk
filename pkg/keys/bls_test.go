@@ -56,10 +56,10 @@ func TestMultiBlsKeyGeneration(t *testing.T) {
 		valid := false
 		blsKeys := []*BlsKey{}
 		for i := uint32(0); i < test.count; i++ {
-			blsKeys = append(blsKeys, &BlsKey{Passphrase: "", FilePath: ""})
+			blsKeys = append(blsKeys, &BlsKey{Passphrase: "", FilePath: "", ShardId: test.shardID})
 		}
 
-		blsKeys, shardCount, err := genBlsKeyForShard(blsKeys, test.shardCount, test.shardID)
+		blsKeys, shardCount, err := genBlsKeyForShard(blsKeys, test.shardCount)
 		if err != nil {
 			valid = false
 		}
