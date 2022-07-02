@@ -1,6 +1,7 @@
 services:
   sdk:
     build: .
+    image: posichain/psc
     volumes:
       - .:/src/github.com/PositionExchange/posichain-gosdk
     entrypoint: bash

@@ -12,6 +12,14 @@ Working directly on this repo can be challenging because of the upstream depende
 README in the main repo for an already ready development environment:
 https://github.com/PositionExchange/posichain/blob/main/README.md.
 
+```shell
+# Build docker image
+docker build -t posichain/psc .
+
+# Try with docker style
+docker run posichain/psc --help
+```
+
 # Usage & Examples
 
 `psc` implements a fluent API, that is, there is a hierarchy of commands.

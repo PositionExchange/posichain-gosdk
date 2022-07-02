@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bufio"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/PositionExchange/posichain-gosdk/pkg/sharding"
@@ -464,9 +465,28 @@ func keysSub() []*cobra.Command {
 	}
 	cmdCheckPassphrase.Flags().StringVar(&passphraseFilePath, "passphrase-file", "", "path to a file containing the passphrase")
 
+	cmdGenerateP2PKey := &cobra.Command{
+		Use:   "generate-p2p-key",
+		Short: "Generate private key for p2p connection.",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			key, _, err := keys.GenKeyP2PRand()
+			if err != nil {
+				return err
+			}
+			ks, err := keys.MakeP2PKeyStore(key)
+			if err != nil {
+				return err
+			}
+			ksStr, _ := json.Marshal(ks)
+			fmt.Println(string(ksStr))
+			return nil
+		},
+	}
+
 	return []*cobra.Command{cmdList, cmdLocation, cmdAdd, cmdRemove, cmdMnemonic, cmdRecoverMnemonic,
 		cmdImportKS, cmdImportPK, cmdExportKS, cmdExportPK, cmdCheckPassphrase,
-		cmdGenerateBlsKey, cmdGenerateMultiBlsKeys, cmdRecoverBlsKey, cmdSaveBlsKey, GetPublicBlsKey}
+		cmdGenerateBlsKey, cmdGenerateMultiBlsKeys, cmdRecoverBlsKey, cmdSaveBlsKey, GetPublicBlsKey, cmdGenerateP2PKey}
 }
 
 func init() {

@@ -14,4 +14,4 @@ RUN ldconfig
 WORKDIR /go/src/github.com/PositionExchange/posichain-gosdk
 COPY . .
 RUN make
-ENTRYPOINT ./psc
+ENTRYPOINT ["./psc"]
