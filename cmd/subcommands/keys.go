@@ -34,9 +34,11 @@ var (
 	quietImport            bool
 	recoverFromMnemonic    bool
 	userProvidesPassphrase bool
+	writePassphrase        bool
 	passphraseFilePath     string
 	passphrase             string
 	blsFilePath            string
+	writeBlsFilePath       bool
 	blsShardID             int32
 	blsCount               uint32
 	shardCount             int
@@ -332,13 +334,16 @@ func keysSub() []*cobra.Command {
 				FilePath:   blsFilePath,
 			}
 
-			return keys.GenBlsKey(blsKey)
+			return keys.GenBlsKey(blsKey, writePassphrase, writeBlsFilePath)
 		},
 	}
 	cmdGenerateBlsKey.Flags().StringVar(&blsFilePath, "bls-file-path", "",
 		"absolute path of where to save encrypted bls private key")
+	cmdGenerateBlsKey.Flags().BoolVar(&writeBlsFilePath, "write-bls-file-path", false,
+		"write bls file path to output")
 	cmdGenerateBlsKey.Flags().BoolVar(&userProvidesPassphrase, "passphrase", false, ppPrompt)
 	cmdGenerateBlsKey.Flags().StringVar(&passphraseFilePath, "passphrase-file", "", "path to a file containing the passphrase")
+	cmdGenerateBlsKey.Flags().BoolVar(&writePassphrase, "write-passphrase", false, "write passphrase to file and output")
 
 	cmdGenerateMultiBlsKeys := &cobra.Command{
 		Use:   "generate-bls-keys",
@@ -389,12 +394,15 @@ func keysSub() []*cobra.Command {
 					blsKeys = append(blsKeys, blsKey)
 				}
 			}
-			return keys.GenMultiBlsKeys(blsKeys, shardCount)
+			return keys.GenMultiBlsKeys(blsKeys, shardCount, writePassphrase, writeBlsFilePath)
 		},
 	}
 	cmdGenerateMultiBlsKeys.Flags().StringVar(&blsFilePath, "bls-file-path", "",
 		"absolute path of where to save encrypted bls private keys")
+	cmdGenerateMultiBlsKeys.Flags().BoolVar(&writeBlsFilePath, "write-bls-file-path", false,
+		"write bls file path to output")
 	cmdGenerateMultiBlsKeys.Flags().BoolVar(&userProvidesPassphrase, "passphrase", false, ppPrompt)
+	cmdGenerateMultiBlsKeys.Flags().BoolVar(&writePassphrase, "write-passphrase", false, "write passphrase to file and output")
 	cmdGenerateMultiBlsKeys.Flags().StringVar(&passphraseFilePath, "passphrase-file", "", "path to a file containing the passphrase")
 	cmdGenerateMultiBlsKeys.Flags().Int32Var(&blsShardID, "shard", 0, "which shard to create bls keys for")
 	cmdGenerateMultiBlsKeys.Flags().IntVar(&shardCount, "shard-count", 0, "how many shard in total")

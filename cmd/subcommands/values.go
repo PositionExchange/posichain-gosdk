@@ -10,7 +10,7 @@ const (
 	hmyDocsDir             = "psc-docs"
 	defaultNodeAddr        = "http://localhost:9500"
 	defaultRpcPrefix       = "hmy"
-	defaultMainnetEndpoint = "https://s0.posichain.org/"
+	defaultMainnetEndpoint = "https://api.s0.posichain.org/"
 )
 
 var (

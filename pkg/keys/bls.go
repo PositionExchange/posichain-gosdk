@@ -61,9 +61,9 @@ func (blsKey *BlsKey) Reset() {
 }
 
 // GenBlsKey - generate a random bls key using the supplied passphrase, write it to disk at the given filePath
-func GenBlsKey(blsKey *BlsKey) error {
+func GenBlsKey(blsKey *BlsKey, writePassphrase bool, writeBlsFilePath bool) error {
 	blsKey.Initialize()
-	out, err := writeBlsKeyToFile(blsKey)
+	out, err := writeBlsKeyToFile(blsKey, writePassphrase, writeBlsFilePath)
 	if err != nil {
 		return err
 	}
@@ -72,14 +72,14 @@ func GenBlsKey(blsKey *BlsKey) error {
 }
 
 // GenMultiBlsKeys - generate multiple BLS keys for a given shard and node/network
-func GenMultiBlsKeys(blsKeys []*BlsKey, shardCount int) error {
+func GenMultiBlsKeys(blsKeys []*BlsKey, shardCount int, writePassphrase bool, writeBlsFilePath bool) error {
 	blsKeys, _, err := genBlsKeyForShard(blsKeys, shardCount)
 	if err != nil {
 		return err
 	}
 	var outputs []string
 	for _, blsKey := range blsKeys {
-		out, err := writeBlsKeyToFile(blsKey)
+		out, err := writeBlsKeyToFile(blsKey, writePassphrase, writeBlsFilePath)
 		if err != nil {
 			return err
 		}
@@ -249,7 +249,7 @@ func getBlsKey(privateKeyHex string) (*bls_core.SecretKey, error) {
 	return privateKey, nil
 }
 
-func writeBlsKeyToFile(blsKey *BlsKey) (string, error) {
+func writeBlsKeyToFile(blsKey *BlsKey, writePassphrase bool, writeBlsFilePath bool) (string, error) {
 	if blsKey.FilePath == "" {
 		cwd, _ := os.Getwd()
 		blsKey.FilePath = fmt.Sprintf("%s/%s.key", cwd, blsKey.PublicKeyHex)
@@ -268,9 +268,17 @@ func writeBlsKeyToFile(blsKey *BlsKey) (string, error) {
 	sk, _ := btcec.PrivKeyFromBytes(btcec.S256(), blsKey.PrivateKey.Serialize())
 	hexAddr := crypto.PubkeyToAddress(sk.PublicKey)
 	oneAddress := address.ToBech32(hexAddr)
+	blsFileDesc := ""
+	if writeBlsFilePath {
+		blsFileDesc = fmt.Sprintf(`, "encrypted-private-key-path": "%s"`, blsKey.FilePath)
+	}
+	passphraseStr := ""
+	if writePassphrase {
+		passphraseStr = fmt.Sprintf(`, "passphrase": "%s"`, blsKey.Passphrase)
+	}
 	out := fmt.Sprintf(`
-{"one-address": "%s", "hex-address": "%s", "shard-id": %d, "public-key": "%s", "private-key": "%s", "encrypted-private-key": "%s", "encrypted-private-key-path": "%s"}`,
-		oneAddress, hexAddr.Hex(), blsKey.ShardId, blsKey.PublicKeyHex, blsKey.PrivateKeyHex, encryptedPrivateKeyStr, blsKey.FilePath)
+{"one-address": "%s", "hex-address": "%s", "shard-id": %d, "public-key": "%s", "private-key": "%s", "encrypted-private-key": "%s"%s%s}`,
+		oneAddress, hexAddr.Hex(), blsKey.ShardId, blsKey.PublicKeyHex, blsKey.PrivateKeyHex, encryptedPrivateKeyStr, blsFileDesc, passphraseStr)
 
 	return out, nil
 }

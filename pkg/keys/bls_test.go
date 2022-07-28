@@ -23,7 +23,7 @@ func TestBlsKeyGeneration(t *testing.T) {
 		t.Errorf("TestBlsKeyGeneration - failed to make test key folder")
 	}
 
-	if err := GenBlsKey(&BlsKey{Passphrase: passphrase, FilePath: absFilePath}); err != nil {
+	if err := GenBlsKey(&BlsKey{Passphrase: passphrase, FilePath: absFilePath}, false, false); err != nil {
 		t.Errorf("TestBlsKeyGeneration - failed to generate bls key using passphrase %s and path %s", passphrase, absFilePath)
 	}
 

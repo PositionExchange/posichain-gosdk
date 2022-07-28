@@ -11,7 +11,7 @@ const (
 	urlListProposalsBySpace                = backendAddress + "%s/proposals"
 	urlListProposalsVoteBySpaceAndProposal = backendAddress + "%s/proposal/%s"
 	urlMessage                             = backendAddress + "message"
-	urlGetValidatorsInTestNet              = "https://api.stake.hmny.io/networks/testnet/validators" //TODO replace by Posichain
-	urlGetValidatorsInMainNet              = "https://api.stake.hmny.io/networks/mainnet/validators" //TODO replace by Posichain
+	urlGetValidatorsInTestNet              = "https://apex-testnet.posichain.org/staking/networks/devnet/validators"
+	urlGetValidatorsInMainNet              = "https://apex.posichain.org/staking/networks/devnet/validators"
 	urlGetProposalInfo                     = "https://gateway.ipfs.io/ipfs/%s"
 )
