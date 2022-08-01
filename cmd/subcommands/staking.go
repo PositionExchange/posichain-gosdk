@@ -322,7 +322,7 @@ Create a new validator"
 		RunE: func(cmd *cobra.Command, args []string) error {
 			networkHandler, err := handlerForShard(0, node)
 			if err != nil {
-				return err
+				return errors.WithMessage(err, "error when validate node shard")
 			}
 
 			commisionRate, err := common.NewDecFromString(commisionRateStr)
