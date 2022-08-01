@@ -55,8 +55,6 @@ jobs:
           path: go/src/github.com/PositionExchange/posichain
           ref: develop # TODO checkout main later
           fetch-depth: 0
-          token: ${{ secrets.TMP_ACCESS_TOKEN }} # TODO remove token when posichain is public
-
 
       - name: Get latest version and release
         run: |
