@@ -413,11 +413,11 @@ Create a new validator"
 
 			nonce, err := getNonce(validatorAddress.String(), networkHandler)
 			if err != nil {
-				return err
+				return errors.WithMessage(err, "error when get nonce for given address")
 			}
 			stakingTx, err := createStakingTransaction(nonce, delegateStakePayloadMaker)
 			if err != nil {
-				return err
+				return errors.WithMessage(err, "error when create staking transaction")
 			}
 
 			passphrase, err = getPassphrase()
@@ -427,7 +427,7 @@ Create a new validator"
 
 			err = handleStakingTransaction(stakingTx, networkHandler, validatorAddress)
 			if err != nil {
-				return err
+				return errors.WithMessage(err, "error when handle staking transaction")
 			}
 			return nil
 		},
