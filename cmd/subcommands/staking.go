@@ -135,7 +135,7 @@ func handleStakingTransaction(
 		}
 
 		if strings.Compare(signerAddr, from) != 0 {
-			return errors.New("error : delegator address doesn't match with ledger hardware addresss")
+			return errors.New("error : delegator address doesn't match with ledger hardware address")
 		}
 	} else {
 		ks, acct, err = store.UnlockedKeystore(from, passphrase)
@@ -146,24 +146,24 @@ func handleStakingTransaction(
 	}
 
 	if err != nil {
-		return err
+		return errors.WithMessage(err, "sign staking tx error")
 	}
 
 	enc, err := rlp.EncodeToBytes(signed)
 	if err != nil {
-		return err
+		return errors.WithMessage(err, "encode signed error")
 	}
 
 	hexSignature := hexutil.Encode(enc)
 	reply, err := networkHandler.SendRPC(rpc.Method.SendRawStakingTransaction, []interface{}{hexSignature})
 	if err != nil {
-		return err
+		return errors.WithMessage(err, "sendRPC error")
 	}
 	r, _ := reply["result"].(string)
 	if timeout > 0 {
 		if err := confirmTx(networkHandler, timeout, r); err != nil {
 			fmt.Println(fmt.Sprintf(`{"transaction-hash":"%s"}`, r))
-			return err
+			return errors.WithMessage(err, "confirmTx error")
 		}
 	} else {
 		fmt.Println(fmt.Sprintf(`{"transaction-receipt":"%s"}`, r))
