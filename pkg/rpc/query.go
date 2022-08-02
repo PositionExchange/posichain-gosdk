@@ -1,6 +1,7 @@
 package rpc
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"strconv"
@@ -14,6 +15,18 @@ import (
 var (
 	queryID = 0
 	post    = []byte("POST")
+	client  = &fasthttp.Client{
+		TLSConfig: &tls.Config{
+			CipherSuites: []uint16{
+				tls.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
+				tls.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
+			},
+			PreferServerCipherSuites: true,
+			InsecureSkipVerify:       true,
+			MinVersion:               tls.VersionTLS11,
+			MaxVersion:               tls.VersionTLS11,
+		},
+	}
 )
 
 func baseRequest(method string, node string, params interface{}) ([]byte, error) {
@@ -30,14 +43,14 @@ func baseRequest(method string, node string, params interface{}) ([]byte, error)
 	req.Header.SetContentType(contentType)
 	req.SetRequestURIBytes([]byte(node))
 	res := fasthttp.AcquireResponse()
-	if err := fasthttp.Do(req, res); err != nil {
+	if err := client.Do(req, res); err != nil {
 		return nil, err
 	}
+	fasthttp.ReleaseRequest(req)
 	c := res.StatusCode()
 	if c != 200 {
 		return nil, fmt.Errorf("http status code not 200, received: %d", c)
 	}
-	fasthttp.ReleaseRequest(req)
 	body := res.Body()
 	result := make([]byte, len(body))
 	copy(result, body)
