@@ -78,7 +78,12 @@ func handlerForShard(senderShard uint32, node string) (*rpc.HTTPMessenger, error
 
 	for _, shard := range s {
 		if uint32(shard.ShardID) == senderShard {
-			return rpc.NewHTTPHandler(shard.HTTP), nil
+			shardUrl := shard.HTTP
+			// TODO Hotfix due by ssl error on api.s0.posichain.org, remove in the future
+			if shardUrl == "https://api.s0.posichain.org" {
+				shardUrl = "https://api.posichain.org"
+			}
+			return rpc.NewHTTPHandler(shardUrl), nil
 		}
 	}
 
