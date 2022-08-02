@@ -2,27 +2,44 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/PositionExchange/posichain/core/vm"
 	"math/big"
 	"strconv"
 	"strings"
 	"time"
 
 	bls_core "github.com/PositionExchange/bls/ffi/go/bls"
+	bls_core "github.com/PositionExchange/bls/ffi/go/bls"
+	"github.com/PositionExchange/posichain-gosdk/pkg/address"
 	"github.com/PositionExchange/posichain-gosdk/pkg/address"
 	"github.com/PositionExchange/posichain-gosdk/pkg/common"
+	"github.com/PositionExchange/posichain-gosdk/pkg/common"
+	"github.com/PositionExchange/posichain-gosdk/pkg/keys"
 	"github.com/PositionExchange/posichain-gosdk/pkg/keys"
 	"github.com/PositionExchange/posichain-gosdk/pkg/ledger"
+	"github.com/PositionExchange/posichain-gosdk/pkg/ledger"
+	"github.com/PositionExchange/posichain-gosdk/pkg/rpc"
 	"github.com/PositionExchange/posichain-gosdk/pkg/rpc"
 	"github.com/PositionExchange/posichain-gosdk/pkg/store"
+	"github.com/PositionExchange/posichain-gosdk/pkg/store"
+	"github.com/PositionExchange/posichain-gosdk/pkg/transaction"
 	"github.com/PositionExchange/posichain-gosdk/pkg/transaction"
 	"github.com/PositionExchange/posichain/accounts"
+	"github.com/PositionExchange/posichain/accounts"
+	"github.com/PositionExchange/posichain/accounts/keystore"
 	"github.com/PositionExchange/posichain/accounts/keystore"
 	"github.com/PositionExchange/posichain/common/denominations"
+	"github.com/PositionExchange/posichain/common/denominations"
+	"github.com/PositionExchange/posichain/core"
+	"github.com/PositionExchange/posichain/core/vm"
+	"github.com/PositionExchange/posichain/crypto/bls"
 	"github.com/PositionExchange/posichain/crypto/bls"
 	"github.com/PositionExchange/posichain/numeric"
+	"github.com/PositionExchange/posichain/numeric"
+	"github.com/PositionExchange/posichain/shard"
 	"github.com/PositionExchange/posichain/shard"
 	"github.com/PositionExchange/posichain/staking/effective"
+	"github.com/PositionExchange/posichain/staking/effective"
+	staking "github.com/PositionExchange/posichain/staking/types"
 	staking "github.com/PositionExchange/posichain/staking/types"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/rlp"
@@ -455,7 +472,7 @@ Create a new validator"
 	)
 	subCmdNewValidator.Flags().StringVar(&blsPubKeyDir, "bls-pubkeys-dir", "", "directory to bls pubkeys storing pub.key, pub.pass files")
 	subCmdNewValidator.Flags().StringVar(&stakingAmount, "amount", "0.0", "staking amount")
-	subCmdNewValidator.Flags().StringVar(&gasPrice, "gas-price", "30", "gas price to pay")
+	subCmdNewValidator.Flags().StringVar(&gasPrice, "gas-price", "100", "gas price to pay")
 	subCmdNewValidator.Flags().StringVar(&gasLimit, "gas-limit", "", "gas limit")
 	subCmdNewValidator.Flags().StringVar(&inputNonce, "nonce", "", "set nonce for transaction")
 	subCmdNewValidator.Flags().StringVar(&targetChain, "chain-id", "", "what chain ID to target")
@@ -633,7 +650,7 @@ Create a new validator"
 	subCmdEditValidator.Flags().StringVar(&slotKeyToRemove, "remove-bls-key", "", "remove BLS pubkey from slot")
 	subCmdEditValidator.Flags().StringVar(&active, "active", "", "validator active true/false")
 
-	subCmdEditValidator.Flags().StringVar(&gasPrice, "gas-price", "30", "gas price to pay")
+	subCmdEditValidator.Flags().StringVar(&gasPrice, "gas-price", "100", "gas price to pay")
 	subCmdEditValidator.Flags().StringVar(&gasLimit, "gas-limit", "", "gas limit")
 	subCmdEditValidator.Flags().StringVar(&inputNonce, "nonce", "", "set nonce for transaction")
 	subCmdEditValidator.Flags().StringVar(&targetChain, "chain-id", "", "what chain ID to target")
@@ -698,7 +715,7 @@ Delegating to a validator
 	subCmdDelegate.Flags().Var(&delegatorAddress, "delegator-addr", "delegator's address")
 	subCmdDelegate.Flags().Var(&validatorAddress, "validator-addr", "validator's address")
 	subCmdDelegate.Flags().StringVar(&stakingAmount, "amount", "0", "staking amount")
-	subCmdDelegate.Flags().StringVar(&gasPrice, "gas-price", "30", "gas price to pay")
+	subCmdDelegate.Flags().StringVar(&gasPrice, "gas-price", "100", "gas price to pay")
 	subCmdDelegate.Flags().StringVar(&gasLimit, "gas-limit", "", "gas limit")
 	subCmdDelegate.Flags().StringVar(&inputNonce, "nonce", "", "set nonce for transaction")
 	subCmdDelegate.Flags().StringVar(&targetChain, "chain-id", "", "what chain ID to target")
@@ -765,7 +782,7 @@ Delegating to a validator
 	subCmdUnDelegate.Flags().Var(&delegatorAddress, "delegator-addr", "delegator's address")
 	subCmdUnDelegate.Flags().Var(&validatorAddress, "validator-addr", "source validator's address")
 	subCmdUnDelegate.Flags().StringVar(&stakingAmount, "amount", "0", "staking amount")
-	subCmdUnDelegate.Flags().StringVar(&gasPrice, "gas-price", "30", "gas price to pay")
+	subCmdUnDelegate.Flags().StringVar(&gasPrice, "gas-price", "100", "gas price to pay")
 	subCmdUnDelegate.Flags().StringVar(&gasLimit, "gas-limit", "", "gas limit")
 	subCmdUnDelegate.Flags().StringVar(&inputNonce, "nonce", "", "set nonce for transaction")
 	subCmdUnDelegate.Flags().StringVar(&targetChain, "chain-id", "", "what chain ID to target")
@@ -820,7 +837,7 @@ Collect token rewards
 
 	subCmdCollectRewards.Flags().BoolVar(&trueNonce, "true-nonce", false, "send transaction with on-chain nonce")
 	subCmdCollectRewards.Flags().Var(&delegatorAddress, "delegator-addr", "delegator's address")
-	subCmdCollectRewards.Flags().StringVar(&gasPrice, "gas-price", "30", "gas price to pay")
+	subCmdCollectRewards.Flags().StringVar(&gasPrice, "gas-price", "100", "gas price to pay")
 	subCmdCollectRewards.Flags().StringVar(&gasLimit, "gas-limit", "", "gas limit")
 	subCmdCollectRewards.Flags().StringVar(&inputNonce, "nonce", "", "set nonce for tx")
 	subCmdCollectRewards.Flags().StringVar(&targetChain, "chain-id", "", "what chain ID to target")
@@ -846,7 +863,7 @@ func init() {
 		Use:   "staking",
 		Short: "newvalidator, editvalidator, delegate, undelegate or redelegate",
 		Long: `
-Create a staking transaction, sign it, and send off to the Posichain
+Create a staking transaction, sign it, and send off to the Harmony blockchain
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.Help()
