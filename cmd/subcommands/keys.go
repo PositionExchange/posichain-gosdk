@@ -373,8 +373,8 @@ func keysSub() []*cobra.Command {
 			}
 
 			var blsKeys []*keys.BlsKey
-			for _, shardId := range blsShardIDs {
-				for i := uint32(0); i < blsCount; i++ {
+			for i := uint32(0); i < blsCount; i++ {
+				for _, shardId := range blsShardIDs {
 					keyFilePath := blsFilePath
 					if blsFilePath != "" {
 						fmt.Printf("Enter absolute path for key #%d:\n", i+1)
