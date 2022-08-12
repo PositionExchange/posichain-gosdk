@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	bls_core "github.com/PositionExchange/bls/ffi/go/bls"
-	"github.com/PositionExchange/posichain-gosdk/pkg/address"
 	"github.com/PositionExchange/posichain-gosdk/pkg/rpc"
 	"github.com/PositionExchange/posichain/crypto/bls"
 	"github.com/spf13/cobra"
@@ -95,26 +94,6 @@ func init() {
 	cmdUtilities.AddCommand(cmdMetrics)
 	cmdUtilities.AddCommand(cmdShardForBls)
 	cmdUtilities.AddCommand([]*cobra.Command{{
-		Use:   "bech32-to-addr",
-		Args:  cobra.ExactArgs(1),
-		Short: "0x Address of a bech32 one-address",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			addr, err := address.Bech32ToAddress(args[0])
-			if err != nil {
-				return err
-			}
-			fmt.Println(addr.Hex())
-			return nil
-		},
-	}, {
-		Use:   "addr-to-bech32",
-		Args:  cobra.ExactArgs(1),
-		Short: "bech32 one-address of an 0x address",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			fmt.Println(address.ToBech32(address.Parse(args[0])))
-			return nil
-		},
-	}, {
 		Use:   "committees",
 		Short: "current and previous committees",
 		RunE: func(cmd *cobra.Command, args []string) error {

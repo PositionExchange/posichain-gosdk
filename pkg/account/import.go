@@ -11,7 +11,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/PositionExchange/posichain-gosdk/pkg/address"
 	"github.com/PositionExchange/posichain-gosdk/pkg/common"
 	"github.com/PositionExchange/posichain-gosdk/pkg/mnemonic"
 	"github.com/PositionExchange/posichain-gosdk/pkg/store"
@@ -43,10 +42,10 @@ func ImportFromPrivateKey(privateKey, name, passphrase string) (string, error) {
 
 	// btcec.PrivKeyFromBytes only returns a secret key and public key
 	sk, _ := btcec.PrivKeyFromBytes(btcec.S256(), privateKeyBytes)
-	oneAddress := address.ToBech32(crypto.PubkeyToAddress(sk.PublicKey))
+	hexAddress := crypto.PubkeyToAddress(sk.PublicKey).Hex()
 
-	if store.FromAddress(oneAddress) != nil {
-		return "", fmt.Errorf("address %s already exists", oneAddress)
+	if store.FromAddress(hexAddress) != nil {
+		return "", fmt.Errorf("address %s already exists", hexAddress)
 	}
 
 	ks := store.FromAccountName(name)
@@ -124,10 +123,10 @@ func ImportKeyStore(keyPath, name, passphrase string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	b32 := address.ToBech32(key.Address)
-	hasAddress := store.FromAddress(b32) != nil
+	hexAddress := key.Address.Hex()
+	hasAddress := store.FromAddress(hexAddress) != nil
 	if hasAddress {
-		return "", fmt.Errorf("address %s already exists in keystore", b32)
+		return "", fmt.Errorf("address %s already exists in keystore", hexAddress)
 	}
 	uDir, _ := homedir.Dir()
 	newPath := filepath.Join(uDir, common.DefaultConfigDirName, common.DefaultConfigAccountAliasesDirName, name, filepath.Base(keyPath))

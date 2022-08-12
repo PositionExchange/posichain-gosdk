@@ -136,7 +136,7 @@ func (C *EthController) setAmount(amount numeric.Dec) {
 	}
 	balanceRPCReply, err := C.messenger.SendRPC(
 		rpc.Method.GetBalance,
-		p{address.ToBech32(C.sender.account.Address), "latest"},
+		p{C.sender.account.Address.Hex(), "latest"},
 	)
 	if err != nil {
 		C.executionError = err
@@ -167,7 +167,7 @@ func (C *EthController) setAmount(amount numeric.Dec) {
 }
 
 func (C *EthController) setReceiver(receiver string) {
-	C.transactionForRPC.params["receiver"] = address.Parse(receiver)
+	C.transactionForRPC.params["receiver"] = address.MustParse(receiver)
 }
 
 func (C *EthController) setNewTransactionWithDataAndGas(data []byte) {

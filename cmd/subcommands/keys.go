@@ -168,7 +168,7 @@ func keysSub() []*cobra.Command {
 				fmt.Println(acc.Mnemonic)
 			}
 			addr, _ := store.AddressFromAccountName(acc.Name)
-			fmt.Printf("ONE Address: %s\n", addr)
+			fmt.Printf("Hex Address: %s\n", addr)
 			return nil
 		},
 	}
@@ -226,7 +226,7 @@ func keysSub() []*cobra.Command {
 			}
 			fmt.Println("Successfully recovered account from mnemonic!")
 			addr, _ := store.AddressFromAccountName(acc.Name)
-			fmt.Printf("ONE Address: %s\n", addr)
+			fmt.Printf("Hex Address: %s\n", addr)
 			return nil
 		},
 	}
@@ -250,7 +250,7 @@ func keysSub() []*cobra.Command {
 			if !quietImport && err == nil {
 				fmt.Printf("Imported keystore given account alias of `%s`\n", name)
 				addr, _ := store.AddressFromAccountName(name)
-				fmt.Printf("ONE Address: %s\n", addr)
+				fmt.Printf("Hex Address: %s\n", addr)
 			}
 			return err
 		},
@@ -276,7 +276,7 @@ func keysSub() []*cobra.Command {
 			if !quietImport && err == nil {
 				fmt.Printf("Imported keystore given account alias of `%s`\n", name)
 				addr, _ := store.AddressFromAccountName(name)
-				fmt.Printf("ONE Address: %s\n", addr)
+				fmt.Printf("Hex Address: %s\n", addr)
 			}
 			return err
 		},

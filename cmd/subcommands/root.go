@@ -1,11 +1,8 @@
 package cmd
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/PositionExchange/posichain-gosdk/pkg/address"
-	"net/http"
 	"os"
 	"path"
 	"regexp"
@@ -32,7 +29,7 @@ var (
 	rpcPrefix       string
 	keyStoreDir     string
 	givenFilePath   string
-	endpoint        = regexp.MustCompile(`https://s[0-9]\..*\.posichain\.org`)
+	endpoint        = regexp.MustCompile(`https://api\.s\d\..*\.posichain\.org`)
 	request         = func(method string, params []interface{}) error {
 		if !noLatest {
 			params = append(params, "latest")
@@ -127,16 +124,16 @@ func init() {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var docNode, docNet string
 			if node == defaultNodeAddr || chainName.chainID == &common.Chain.MainNet {
-				docNode = `https://s0.posichain.org`
+				docNode = `https://api.posichain.org`
 				docNet = `Mainnet`
 			} else if chainName.chainID == &common.Chain.TestNet {
-				docNode = `https://s0.t.posichain.org`
+				docNode = `https://api.s0.t.posichain.org`
 				docNet = `Long-Running Testnet`
 			} else if chainName.chainID == &common.Chain.DevNet {
-				docNode = `https://s0.d.posichain.org`
+				docNode = `https://api.s0.d.posichain.org`
 				docNet = `Long-Running Devnet`
 			} else if chainName.chainID == &common.Chain.StressNet {
-				docNode = `https://s0.s.posichain.org`
+				docNode = `https://api.s0.s.posichain.org`
 				docNet = `Stress Testing Network`
 			}
 			fmt.Print(strings.ReplaceAll(strings.ReplaceAll(cookbookDoc, `[NODE]`, docNode), `[NETWORK]`, docNet))
@@ -162,30 +159,12 @@ var (
 	// VersionWrapDump meant to be set from main.go
 	VersionWrapDump = ""
 	cookbook        = color.GreenString("psc cookbook")
-	versionLink     = "https://harmony.one/hmycli_ver"
-	versionFormat   = regexp.MustCompile("v[0-9]+-[a-z0-9]{7}")
 )
 
-// Execute kicks off the hmy CLI
+// Execute kicks off the PSC CLI
 func Execute() {
 	RootCmd.SilenceErrors = true
 	if err := RootCmd.Execute(); err != nil {
-		resp, httpErr := http.Get(versionLink)
-		if httpErr != nil {
-			return
-		}
-		defer resp.Body.Close()
-		// If error, no op
-		if resp != nil && resp.StatusCode == 200 {
-			buf := new(bytes.Buffer)
-			buf.ReadFrom(resp.Body)
-
-			currentVersion := versionFormat.FindAllString(buf.String(), 1)
-			if currentVersion != nil && currentVersion[0] != VersionWrapDump {
-				warnMsg := fmt.Sprintf("Warning: Using outdated version. Redownload to upgrade to %s\n", currentVersion[0])
-				fmt.Fprintf(os.Stderr, color.RedString(warnMsg))
-			}
-		}
 		errMsg := errors.Wrapf(err, "commit: %s, error", VersionWrapDump).Error()
 		fmt.Fprintf(os.Stderr, errMsg+"\n")
 		fmt.Fprintf(os.Stderr, "check "+cookbook+" for valid examples or try adding a `--help` flag\n")
@@ -205,21 +184,17 @@ func endpointToChainID(nodeAddr string) chainIDWrapper {
 }
 
 func validateAddress(cmd *cobra.Command, args []string) error {
-	// Check if input valid one address
+	// Check if input valid address
 	tmpAddr := oneAddress{}
 	if err := tmpAddr.Set(args[0]); err != nil {
 		// Check if input is valid account name
-		if acc, err := store.AddressFromAccountName(args[0]); err == nil {
-			addr = oneAddress{acc}
-			return nil
+		hexAccount, err := store.AddressFromAccountName(args[0])
+		if err != nil {
+			return errors.WithMessage(err, "invalid hex address/Invalid account name: "+args[0])
 		}
-
-		bech32Addr := address.ToBech32(address.Parse(args[0]))
-		if bech32Addr == "" {
-			return fmt.Errorf("Invalid one address/Invalid account name: %s", args[0])
+		if err := tmpAddr.Set(hexAccount); err != nil {
+			return errors.WithMessage(err, "hex account is not valid")
 		}
-
-		tmpAddr = oneAddress{bech32Addr}
 	}
 	addr = tmpAddr
 	return nil

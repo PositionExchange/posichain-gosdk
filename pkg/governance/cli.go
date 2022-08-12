@@ -71,7 +71,7 @@ func PrintViewProposal(proposalHash string) error {
 		validators = getValidators(urlGetValidatorsInTestNet)
 	}
 
-	fmt.Printf("Author : %s\n", address.ToBech32(address.Parse(proposals.Address)))
+	fmt.Printf("Author : %s\n", address.MustParse(proposals.Address))
 	fmt.Printf("IPFS   : %s\n", proposalHash)
 	fmt.Printf("Space  : %s\n", proposals.parsedMsg.Space)
 	fmt.Printf("Start  : %s\n", timestampToDateString(proposals.parsedMsg.Payload.Start))
@@ -91,7 +91,7 @@ func PrintViewProposal(proposalHash string) error {
 
 	for _, vote := range proposals.votes {
 		stack := "0"
-		addr := address.ToBech32(address.Parse(vote.Address))
+		addr := address.MustParse(vote.Address).Hex()
 		if v, ok := validators[addr]; ok {
 			float, err := strconv.ParseFloat(v.TotalStake, 64)
 			if err == nil {
@@ -136,7 +136,7 @@ var proposalTemplate = []byte(`{
           "name": "erc20-balance-of",
           "params": {
             "address": "0x00eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-            "symbol": "ONE",
+            "symbol": "POSI",
             "decimals": 18
           }
         }
@@ -215,7 +215,7 @@ func checkPermission(space string, account accounts.Account) bool {
 		return false
 	}
 
-	if _, ok := validators[address.ToBech32(account.Address)]; ok {
+	if _, ok := validators[account.Address.Hex()]; ok {
 		return true
 	} else {
 		return false
@@ -242,7 +242,7 @@ func Vote(keyStore *keystore.KeyStore, account accounts.Account, proposalHash st
 	}
 
 	if !checkPermission(proposals.parsedMsg.Space, account) {
-		return fmt.Errorf("no permission!")
+		return fmt.Errorf("no permission")
 	}
 
 	chooseIndex := -1

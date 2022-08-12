@@ -3,6 +3,7 @@ package ledger
 import (
 	"bytes"
 	"fmt"
+	"github.com/ethereum/go-ethereum/common"
 	"log"
 	"math/big"
 	"os"
@@ -11,7 +12,6 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/sha3"
 
-	"github.com/PositionExchange/posichain-gosdk/pkg/address"
 	"github.com/PositionExchange/posichain/core/types"
 	staking "github.com/PositionExchange/posichain/staking/types"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -36,12 +36,12 @@ func getLedger() *NanoS {
 	return nanos
 }
 
-//ProcessAddressCommand list the address associated with Ledger Nano S
+// GetAddress list the address associated with Ledger Nano S
 func GetAddress() string {
 	n := getLedger()
 	oneAddr, err := n.GetAddress()
 	if err != nil {
-		log.Fatalln("Couldn't get one address:", err)
+		log.Fatalln("Couldn't get address:", err)
 		os.Exit(-1)
 	}
 
@@ -53,7 +53,7 @@ func ProcessAddressCommand() {
 	n := getLedger()
 	oneAddr, err := n.GetAddress()
 	if err != nil {
-		log.Fatalln("Couldn't get one address:", err)
+		log.Fatalln("Couldn't get address:", err)
 		os.Exit(-1)
 	}
 
@@ -116,8 +116,9 @@ func SignTx(tx *types.Transaction, chainID *big.Int) ([]byte, string, error) {
 		return nil, "", err
 	}
 
-	pubBytes := crypto.Keccak256(pubkey[1:65])[12:]
-	signerAddr, _ := address.ConvertAndEncode("one", pubBytes)
+	pubBytes := crypto.Keccak256(pubkey[1:])[12:]
+	var signerAddr common.Address
+	copy(signerAddr[:], pubBytes)
 
 	var r, s, v *big.Int
 	if chainID != nil {
@@ -147,7 +148,7 @@ func SignTx(tx *types.Transaction, chainID *big.Int) ([]byte, string, error) {
 			s,
 		})
 
-	return rawTx, signerAddr, err
+	return rawTx, signerAddr.Hex(), err
 }
 
 func frontierSignatureValues(sig []byte) (r, s, v *big.Int, err error) {
@@ -174,7 +175,7 @@ func eip155SignerSignatureValues(chainID *big.Int, sig []byte) (R, S, V *big.Int
 	return R, S, V, nil
 }
 
-// SignTx signs the given transaction with ledger.
+// SignStakingTx signs the given transaction with ledger.
 func SignStakingTx(tx *staking.StakingTransaction, chainID *big.Int) (*staking.StakingTransaction, string, error) {
 	//get the RLP encoding of raw staking with R,S,V = 0
 	w := &bytes.Buffer{}
@@ -216,10 +217,11 @@ func SignStakingTx(tx *staking.StakingTransaction, chainID *big.Int) (*staking.S
 		return nil, "", err
 	}
 
-	pubBytes := crypto.Keccak256(pubkey[1:65])[12:]
-	signerAddr, _ := address.ConvertAndEncode("one", pubBytes)
+	pubBytes := crypto.Keccak256(pubkey[1:])[12:]
+	var signerAddr common.Address
+	copy(signerAddr[:], pubBytes)
 
 	// WithSignature returns a new transaction with the given signature.
 	rawTx, err := tx.WithSignature(staking.NewEIP155Signer(chainID), sig[:])
-	return rawTx, signerAddr, err
+	return rawTx, signerAddr.Hex(), err
 }

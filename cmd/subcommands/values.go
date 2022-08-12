@@ -30,7 +30,7 @@ Note:
 Examples:
 
 %s
-./psc --node=[NODE] balances <SOME_ONE_ADDRESS>
+./psc --node=[NODE] balances <SOME_HEX_ADDRESS>
 
 %s
 ./psc --node=[NODE] blockchain transaction-by-hash <SOME_TX_HASH>
@@ -40,7 +40,7 @@ Examples:
 
 %s
 ./psc --node=[NODE] transfer \
-    --from <SOME_ONE_ADDRESS> --to <SOME_ONE_ADDRESS> \
+    --from <SOME_HEX_ADDRESS> --to <SOME_HEX_ADDRESS> \
     --from-shard 0 --to-shard 1 --amount 200 --passphrase
 
 %s
@@ -66,31 +66,31 @@ Check README for details on json file format.
 ./psc keys generate-bls-key --bls-file-path <PATH_FOR_BLS_KEY_FILE>
 
 %s
-./psc --node=[NODE] staking create-validator --amount 10 --validator-addr <SOME_ONE_ADDRESS> \
+./psc --node=[NODE] staking create-validator --amount 10 --validator-addr <SOME_HEX_ADDRESS> \
     --bls-pubkeys <BLS_KEY_1>,<BLS_KEY_2>,<BLS_KEY_3> \
     --identity foo --details bar --name baz --max-change-rate 0.1 --max-rate 0.1 --max-total-delegation 10 \
     --min-self-delegation 10 --rate 0.1 --security-contact Leo  --website posichain.org --passphrase
 
 %s
 ./psc --node=[NODE] staking edit-validator \
-    --validator-addr <SOME_ONE_ADDRESS> --identity foo --details bar \
+    --validator-addr <SOME_HEX_ADDRESS> --identity foo --details bar \
     --name baz --security-contact EK --website posichain.org \
     --min-self-delegation 0 --max-total-delegation 10 --rate 0.1\
     --add-bls-key <SOME_BLS_KEY> --remove-bls-key <OTHER_BLS_KEY> --passphrase
 
 %s
 ./psc --node=[NODE] staking delegate \
-    --delegator-addr <SOME_ONE_ADDRESS> --validator-addr <VALIDATOR_ONE_ADDRESS> \
+    --delegator-addr <SOME_HEX_ADDRESS> --validator-addr <VALIDATOR_HEX_ADDRESS> \
     --amount 10 --passphrase
 
 %s
 ./psc --node=[NODE] staking undelegate \
-    --delegator-addr <SOME_ONE_ADDRESS> --validator-addr <VALIDATOR_ONE_ADDRESS> \
+    --delegator-addr <SOME_HEX_ADDRESS> --validator-addr <VALIDATOR_HEX_ADDRESS> \
     --amount 10 --passphrase
 
 %s
 ./psc --node=[NODE] staking collect-rewards \
-    --delegator-addr <SOME_ONE_ADDRESS> --passphrase
+    --delegator-addr <SOME_HEX_ADDRESS> --passphrase
 
 %s
 ./psc --node=[NODE] blockchain validator elected

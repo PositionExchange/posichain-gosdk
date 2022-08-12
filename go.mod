@@ -14,6 +14,7 @@ require (
 	github.com/ethereum/go-ethereum v1.9.25
 	github.com/fatih/color v1.10.0
 	github.com/golang/snappy v0.0.2-0.20200707131729-196ae77b8a26 // indirect
+	github.com/hashicorp/go-version v1.2.0 // indirect
 	github.com/karalabe/hid v1.0.0
 	github.com/libp2p/go-libp2p-core v0.8.6
 	github.com/mattn/go-colorable v0.1.9

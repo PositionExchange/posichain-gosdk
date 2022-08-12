@@ -51,28 +51,28 @@ Note:
 Examples:
 
 1.  Check account balance on given chain
-./psc --node=https://s0.posichain.org balances <SOME_ONE_ADDRESS>
+./psc --node=https://api.posichain.org balances <SOME_HEX_ADDRESS>
 
 2.  Check sent transaction
-./psc --node=https://s0.posichain.org blockchain transaction-by-hash <SOME_TX_HASH>
+./psc --node=https://api.posichain.org blockchain transaction-by-hash <SOME_TX_HASH>
 
 3.  List local account keys
 ./psc keys list
 
 4.  Sending a transaction (waits 40 seconds for transaction confirmation)
-./psc --node=https://s0.posichain.org transfer \
-    --from <SOME_ONE_ADDRESS> --to <SOME_ONE_ADDRESS> \
+./psc --node=https://api.posichain.org transfer \
+    --from <SOME_HEX_ADDRESS> --to <SOME_HEX_ADDRESS> \
     --from-shard 0 --to-shard 1 --amount 200 --passphrase
 
 5.  Sending a batch of transactions as dictated from a file (the `--dry-run` options still apply)
-./psc --node=https://s0.posichain.org transfer --file <PATH_TO_JSON_FILE>
+./psc --node=https://api.posichain.org transfer --file <PATH_TO_JSON_FILE>
 Check README for details on json file format.
 
 6.  Check a completed transaction receipt
-./psc --node=https://s0.posichain.org blockchain transaction-receipt <SOME_TX_HASH>
+./psc --node=https://api.posichain.org blockchain transaction-receipt <SOME_TX_HASH>
 
 7.  Import an account using the mnemonic. Prompts the user to give the mnemonic.
-./psc keys recover-from-mnemonic <ACCOUNT_NAME>
+./psc keys recover-from-mnemonic <ACCOUNT_NAME> --passphrase
 
 8.  Import an existing keystore file
 ./psc keys import-ks <PATH_TO_KEYSTORE_JSON>
@@ -87,43 +87,43 @@ Check README for details on json file format.
 ./psc keys generate-bls-key --bls-file-path <PATH_FOR_BLS_KEY_FILE>
 
 12. Create a new validator with a list of BLS keys
-./psc --node=https://s0.posichain.org staking create-validator --amount 10 --validator-addr <SOME_ONE_ADDRESS> \
+./psc --node=https://api.posichain.org staking create-validator --amount 10 --validator-addr <SOME_HEX_ADDRESS> \
     --bls-pubkeys <BLS_KEY_1>,<BLS_KEY_2>,<BLS_KEY_3> \
     --identity foo --details bar --name baz --max-change-rate 0.1 --max-rate 0.1 --max-total-delegation 10 \
     --min-self-delegation 10 --rate 0.1 --security-contact Leo  --website posichain.org --passphrase
 
 13. Edit an existing validator
-./psc --node=https://s0.posichain.org staking edit-validator \
-    --validator-addr <SOME_ONE_ADDRESS> --identity foo --details bar \
+./psc --node=https://api.posichain.org staking edit-validator \
+    --validator-addr <SOME_HEX_ADDRESS> --identity foo --details bar \
     --name baz --security-contact EK --website posichain.org \
     --min-self-delegation 0 --max-total-delegation 10 --rate 0.1\
     --add-bls-key <SOME_BLS_KEY> --remove-bls-key <OTHER_BLS_KEY> --passphrase
 
 14. Delegate an amount to a validator
-./psc --node=https://s0.posichain.org staking delegate \
-    --delegator-addr <SOME_ONE_ADDRESS> --validator-addr <VALIDATOR_ONE_ADDRESS> \
+./psc --node=https://api.posichain.org staking delegate \
+    --delegator-addr <SOME_HEX_ADDRESS> --validator-addr <VALIDATOR_HEX_ADDRESS> \
     --amount 10 --passphrase
 
 15. Undelegate to a validator
-./psc --node=https://s0.posichain.org staking undelegate \
-    --delegator-addr <SOME_ONE_ADDRESS> --validator-addr <VALIDATOR_ONE_ADDRESS> \
+./psc --node=https://api.posichain.org staking undelegate \
+    --delegator-addr <SOME_HEX_ADDRESS> --validator-addr <VALIDATOR_HEX_ADDRESS> \
     --amount 10 --passphrase
 
 16. Collect block rewards as a delegator
-./psc --node=https://s0.posichain.org staking collect-rewards \
-    --delegator-addr <SOME_ONE_ADDRESS> --passphrase
+./psc --node=https://api.posichain.org staking collect-rewards \
+    --delegator-addr <SOME_HEX_ADDRESS> --passphrase
 
 17. Check elected validators
-./psc --node=https://s0.posichain.org blockchain validator elected
+./psc --node=https://api.posichain.org blockchain validator elected
 
 18. Get current staking utility metrics
-./psc --node=https://s0.posichain.org blockchain utility-metrics
+./psc --node=https://api.posichain.org blockchain utility-metrics
 
 19. Check in-memory record of failed staking transactions
-./psc --node=https://s0.posichain.org failures staking
+./psc --node=https://api.posichain.org failures staking
 
 20. Check which shard your BLS public key would be assigned to as a validator
-./psc --node=https://s0.posichain.org utility shard-for-bls <BLS_PUBLIC_KEY>
+./psc --node=https://api.posichain.org utility shard-for-bls <BLS_PUBLIC_KEY>
 
 21. List Space In Governance
 ./psc governance list-space
@@ -135,7 +135,7 @@ Check README for details on json file format.
 ./psc governance view-proposal --proposal=[proposal hash]
 
 24. New Proposal In Space Of Governance
-./psc governance new-proposal --proposal-yaml=[file path] --key=[key name]
+./psc governance new-proposal --proposal-yaml=[file path] --key=[account address]
 PS: key must first use (psc keys import-private-key) to import
 Yaml example(time is in UTC timezone):
 space: staking-testnet
@@ -150,7 +150,7 @@ body: |
   you can write mutli line
 
 25. Vote Proposal In Space Of Governance
-./psc governance vote-proposal --proposal=[proposal hash] --choice=[your choice text, eg: yes] --key=[key name]
+./psc governance vote-proposal --proposal=[proposal hash] --choice=[your choise text, eg: yes] --key=[account address]
 PS: key must first use (psc keys import-private-key) to import
 
 26. Enter Console
@@ -175,15 +175,15 @@ The JSON file will be a JSON array where each element has the following attribut
 
 |         Key         | Value-type | Value-description                                                                                                                      |
 |:-------------------:|:----------:|:---------------------------------------------------------------------------------------------------------------------------------------|
-|       `from`        |   string   | [**Required**] Sender's one address, must have key in keystore.                                                                        |
-|        `to`         |   string   | [**Required**] The receivers one address.                                                                                              |
-|      `amount`       |   string   | [**Required**] The amount to send in $ONE.                                                                                             |
+|       `from`        |   string   | [**Required**] Sender's hex address, must have key in keystore.                                                                        |
+|        `to`         |   string   | [**Required**] The receivers hex address.                                                                                              |
+|      `amount`       |   string   | [**Required**] The amount to send in $POSI.                                                                                            |
 |    `from-shard`     |   string   | [**Required**] The source shard.                                                                                                       |
 |     `to-shard`      |   string   | [**Required**] The destination shard.                                                                                                  |
 |  `passphrase-file`  |   string   | [*Optional*] The file path to file containing the passphrase in plain text. If none is provided, check for passphrase string.          |
 | `passphrase-string` |   string   | [*Optional*] The passphrase as a string in plain text. If none is provided, passphrase is ''.                                          |
 |       `nonce`       |   string   | [*Optional*] The nonce of a specific transaction, default uses nonce from blockchain.                                                  |
-|     `gas-price`     |   string   | [*Optional*] The gas price to pay in NANO (1e-9 of $ONE), default is 1.                                                                |
+|     `gas-price`     |   string   | [*Optional*] The gas price to pay in NANO (1e-9 of $POSI), default is 1.                                                               |
 |     `gas-limit`     |   string   | [*Optional*] The gas limit, default is 21000.                                                                                          |
 |   `stop-on-error`   |  boolean   | [*Optional*] If true, stop sending transactions if an error occurred, default is false.                                                |
 |    `true-nonce`     |  boolean   | [*Optional*] If true, send transaction using true on-chain nonce. Cannot be used with `nonce`. If none is provided, use tx pool nonce. |
@@ -193,8 +193,8 @@ Example of JSON file:
 ```json
 [
   {
-    "from": "one103q7qe5t2505lypvltkqtddaef5tzfxwsse4z7",
-    "to": "one1zksj3evekayy90xt4psrz8h6j2v3hla4qwz4ur",
+    "from": "0x66d9e94DFFb78DD894C5e418E1015eE6490A947E",
+    "to": "0x73fCD994A8c25Cb23fD02FCb091c310037B78997",
     "from-shard" : "0",
     "to-shard": "0",
     "amount": "1",
@@ -203,8 +203,8 @@ Example of JSON file:
     "stop-on-error": true
   },
   {
-    "from": "one103q7qe5t2505lypvltkqtddaef5tzfxwsse4z7",
-    "to": "one1zksj3evekayy90xt4psrz8h6j2v3hla4qwz4ur",
+    "from": "0x66d9e94DFFb78DD894C5e418E1015eE6490A947E",
+    "to": "0x73fCD994A8c25Cb23fD02FCb091c310037B78997",
     "from-shard" : "0",
     "to-shard": "0",
     "amount": "1",
@@ -245,13 +245,13 @@ Example of returned JSON Array:
       "blockNumber": "0xb71",
       "contractAddress": null,
       "cumulativeGasUsed": "0x5208",
-      "from": "one103q7qe5t2505lypvltkqtddaef5tzfxwsse4z7",
+      "from": "0x66d9e94DFFb78DD894C5e418E1015eE6490A947E",
       "gasUsed": "0x5208",
       "logs": [],
       "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
       "shardID": 0,
       "status": "0x1",
-      "to": "one1zksj3evekayy90xt4psrz8h6j2v3hla4qwz4ur",
+      "to": "0x73fCD994A8c25Cb23fD02FCb091c310037B78997",
       "transactionHash": "0xf1706080ea9ac210ee2c12c69fb310be5a5da99582b7c783e2f741a3536abbfd",
       "transactionIndex": "0x0"
     },
@@ -263,17 +263,17 @@ Example of returned JSON Array:
 ## Offline sign transfer
 1. Get Nonce From a Account. (Need to be online, but no passphrase required)
 ```bash
-./psc get-nonce --node=https://s0.posichain.org --from=[ONE address]
+./psc get-nonce --node=https://api.posichain.org --from=[hex address]
 ```
 
 2. Sign transfer and write to file. (Passphrase required, But no need to be online)
 ```bash
-./psc transfer --offline-sign --nonce=[nonce value from previous] --from=[ONE address] --to=[ONE address] --amount=1000 --from-shard=0 --to-shard=0 > signed.json
+./psc transfer --offline-sign --nonce=[nonce value from previous] --from=[hex address] --to=[hex address] --amount=1000 --from-shard=0 --to-shard=0 > signed.json
 ```
 
 3. send `signed.json` to Posichain! (Need to be online, but no passphrase required)
 ```bash
-./psc offline-sign-transfer --node=https://s0.posichain.org --file ./signed.json
+./psc offline-sign-transfer --node=https://api.posichain.org --file ./signed.json
 ```
 
 # Debugging
@@ -290,7 +290,7 @@ PSC_RPC_DEBUG=true PSC_TX_DEBUG=true ./psc blockchain protocol-version
 You can deploy the contract use the command;
 
 ```bash
-./psc command --node="https://s0.posichain.org" --net=testnet
+./psc command --node="https://api.posichain.org" --net=testnet
 ```
 
 Then you can test this code to deploy a smart contract
@@ -298,9 +298,9 @@ Then you can test this code to deploy a smart contract
 ```js
 var abi = [{"constant":false,"inputs":[],"name":"changeIt","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"number","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"}]
 var code = '0x60806040526212345660005534801561001757600080fd5b5060c8806100266000396000f3006080604052600436106049576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806327b5c17514604e5780638381f58a146062575b600080fd5b348015605957600080fd5b506060608a565b005b348015606d57600080fd5b5060746096565b6040518082815260200191505060405180910390f35b62654321600081905550565b600054815600a165627a7a72305820294db9eed647c48762212fd43bf9ed7733c9d9f43b1ce5583bb4c2bae97fae770029'
-var account = 'one1xjanr7lgulc0fqyc8dmfp6jfwuje2d94xfnzyd' // change this to your account address, support eth or one address
+var account = '0x66d9e94DFFb78DD894C5e418E1015eE6490A947E' // change this to your account address, support hex address
 var myContract=eth.contract(abi)
 contract = myContract.new({from:account,data:code})
 ```
 
-Wait for a few seconds and it's ready to use
+Wait for a few seconds, and it's ready to use

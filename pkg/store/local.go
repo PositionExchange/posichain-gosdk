@@ -14,7 +14,7 @@ import (
 	"github.com/PositionExchange/posichain/accounts/keystore"
 	"github.com/pkg/errors"
 
-	homedir "github.com/mitchellh/go-homedir"
+	"github.com/mitchellh/go-homedir"
 )
 
 func init() {
@@ -33,13 +33,13 @@ func LocalAccounts() []string {
 		common.DefaultConfigDirName,
 		common.DefaultConfigAccountAliasesDirName,
 	))
-	accounts := []string{}
+	var accList []string
 	for _, node := range files {
 		if node.IsDir() {
-			accounts = append(accounts, path.Base(node.Name()))
+			accList = append(accList, path.Base(node.Name()))
 		}
 	}
-	return accounts
+	return accList
 }
 
 var (
@@ -47,14 +47,14 @@ var (
 	NoUnlockBadPassphrase = errors.New("could not unlock wallet with given passphrase")
 )
 
-// DescribeLocalAccounts will display all the account alias name and their corresponding one address
+// DescribeLocalAccounts will display all the account alias name and their corresponding hex address
 func DescribeLocalAccounts() {
 	fmt.Println(describe)
 	for _, name := range LocalAccounts() {
 		ks := FromAccountName(name)
 		allAccounts := ks.Accounts()
 		for _, account := range allAccounts {
-			fmt.Printf("%-48s\t%s\n", name, address.ToBech32(account.Address))
+			fmt.Printf("%-48s\t%s\n", name, account.Address.Hex())
 		}
 	}
 }
@@ -70,23 +70,23 @@ func DoesNamedAccountExist(name string) bool {
 	return false
 }
 
-// Returns one address for account name if exists
+// AddressFromAccountName Returns hex address for account name if exists
 func AddressFromAccountName(name string) (string, error) {
 	ks := FromAccountName(name)
 	// FIXME: Assume 1 account per keystore for now
 	for _, account := range ks.Accounts() {
-		return address.ToBech32(account.Address), nil
+		return account.Address.Hex(), nil
 	}
-	return "", fmt.Errorf("Keystore not found.")
+	return "", fmt.Errorf("keystore not found")
 }
 
-// FromAddress will return nil if the bech32 string is not found in the imported accounts
-func FromAddress(bech32 string) *keystore.KeyStore {
+// FromAddress will return nil if the hex address is not found in the imported accounts
+func FromAddress(hexAddress string) *keystore.KeyStore {
 	for _, name := range LocalAccounts() {
 		ks := FromAccountName(name)
 		allAccounts := ks.Accounts()
 		for _, account := range allAccounts {
-			if bech32 == address.ToBech32(account.Address) {
+			if hexAddress == account.Address.Hex() {
 				return ks
 			}
 		}
@@ -110,8 +110,8 @@ func UnlockedKeystore(from, passphrase string) (*keystore.KeyStore, *accounts.Ac
 }
 
 func LockKeystore(from string) (*keystore.KeyStore, *accounts.Account, error) {
-	sender := address.Parse(from)
-	ks := FromAddress(address.ToBech32(sender))
+	sender := address.MustParse(from)
+	ks := FromAddress(sender.Hex())
 	if ks == nil {
 		return nil, nil, fmt.Errorf("could not open local keystore for %s", from)
 	}
@@ -126,8 +126,8 @@ func LockKeystore(from string) (*keystore.KeyStore, *accounts.Account, error) {
 }
 
 func UnlockedKeystoreTimeLimit(from, passphrase string, time time.Duration) (*keystore.KeyStore, *accounts.Account, error) {
-	sender := address.Parse(from)
-	ks := FromAddress(address.ToBech32(sender))
+	sender := address.MustParse(from)
+	ks := FromAddress(sender.Hex())
 	if ks == nil {
 		return nil, nil, fmt.Errorf("could not open local keystore for %s", from)
 	}

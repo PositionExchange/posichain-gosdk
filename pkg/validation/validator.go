@@ -8,14 +8,14 @@ import (
 )
 
 var (
-	addressValidationRegexp = regexp.MustCompile(`^(one[a-zA-Z0-9]{39})|(0x[a-fA-F0-9]{40})`)
+	addressValidationRegexp = regexp.MustCompile(`^0x[a-fA-F0-9]{40}`)
 )
 
-// ValidateAddress validates that an address is a valid bech32 address (one...) or a valid base16 address (0x...)
+// ValidateAddress validates that an address is a valid base16 address (0x...)
 func ValidateAddress(address string) error {
 	matches := addressValidationRegexp.FindAllStringSubmatch(address, -1)
 	if len(matches) == 0 {
-		return fmt.Errorf("address supplied (%s) is not valid", address)
+		return fmt.Errorf("address supplied (%s) is not hex valid", address)
 	}
 
 	return nil

@@ -66,8 +66,8 @@ var (
 	errSelfDelegationTooSmall          = errors.New("amount can not be less than min-self-delegation")
 	errSelfDelegationTooLarge          = errors.New("amount can not be greater than max-total-delegation")
 	errInvalidTotalDelegation          = errors.New("max-total-delegation can not be bigger than max-total-delegation")
-	errMinSelfDelegationTooSmall       = errors.New("min-self-delegation can not be less than 1 ONE")
-	errMaxTotalDelegationTooSmall      = errors.New("max-total-delegation can not be less than 1 ONE")
+	errMinSelfDelegationTooSmall       = errors.New("min-self-delegation can not be less than 1 POSI")
+	errMaxTotalDelegationTooSmall      = errors.New("max-total-delegation can not be less than 1 POSI")
 	errInvalidMaxTotalDelegation       = errors.New("max-total-delegation can not be less than min-self-delegation")
 	errCommissionRateTooLarge          = errors.New("rate can not be greater than max-commission-rate")
 	errChangeRateTooLarge              = errors.New("max-change-rate can not be greater than max-commission-rate")
@@ -200,7 +200,7 @@ func confirmTx(networkHandler *rpc.HTTPMessenger, confirmWaitTime uint32, txHash
 }
 
 func delegationAmountSanityCheck(minSelfDelegation *numeric.Dec, maxTotalDelegation *numeric.Dec, amount *numeric.Dec) error {
-	// MinSelfDelegation must be >= 1 ONE
+	// MinSelfDelegation must be >= 1 POSI
 	if minSelfDelegation != nil && minSelfDelegation.LT(oneAsDec) {
 		return errMinSelfDelegationTooSmall
 	}
@@ -397,7 +397,7 @@ Create a new validator"
 
 			delegateStakePayloadMaker := func() (staking.Directive, interface{}) {
 				return staking.DirectiveCreateValidator, staking.CreateValidator{
-					address.Parse(validatorAddress.String()),
+					address.MustParse(validatorAddress.String()),
 					desc,
 					staking.CommissionRates{
 						commisionRate,
@@ -584,7 +584,7 @@ Create a new validator"
 
 			delegateStakePayloadMaker := func() (staking.Directive, interface{}) {
 				return staking.DirectiveEditValidator, staking.EditValidator{
-					address.Parse(validatorAddress.String()),
+					address.MustParse(validatorAddress.String()),
 					desc,
 					commisionRate,
 					mSelDel,
@@ -666,8 +666,8 @@ Delegating to a validator
 				amt = amt.Mul(oneAsDec)
 
 				return staking.DirectiveDelegate, staking.Delegate{
-					address.Parse(delegatorAddress.String()),
-					address.Parse(validatorAddress.String()),
+					address.MustParse(delegatorAddress.String()),
+					address.MustParse(validatorAddress.String()),
 					amt.RoundInt(),
 				}
 			}
@@ -733,8 +733,8 @@ Delegating to a validator
 				amt = amt.Mul(oneAsDec)
 
 				return staking.DirectiveUndelegate, staking.Undelegate{
-					address.Parse(delegatorAddress.String()),
-					address.Parse(validatorAddress.String()),
+					address.MustParse(delegatorAddress.String()),
+					address.MustParse(validatorAddress.String()),
 					amt.RoundInt(),
 				}
 			}
@@ -792,7 +792,7 @@ Collect token rewards
 
 			delegateStakePayloadMaker := func() (staking.Directive, interface{}) {
 				return staking.DirectiveCollectRewards, staking.CollectRewards{
-					address.Parse(delegatorAddress.String()),
+					address.MustParse(delegatorAddress.String()),
 				}
 			}
 

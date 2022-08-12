@@ -9,7 +9,6 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/PositionExchange/posichain-gosdk/pkg/address"
 	"github.com/PositionExchange/posichain-gosdk/pkg/validation"
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/ethereum/go-ethereum/crypto"
@@ -267,7 +266,6 @@ func writeBlsKeyToFile(blsKey *BlsKey, writePassphrase bool, writeBlsFilePath bo
 	}
 	sk, _ := btcec.PrivKeyFromBytes(btcec.S256(), blsKey.PrivateKey.Serialize())
 	hexAddr := crypto.PubkeyToAddress(sk.PublicKey)
-	oneAddress := address.ToBech32(hexAddr)
 	blsFileDesc := ""
 	if writeBlsFilePath {
 		blsFileDesc = fmt.Sprintf(`, "encrypted-private-key-path": "%s"`, blsKey.FilePath)
@@ -277,8 +275,8 @@ func writeBlsKeyToFile(blsKey *BlsKey, writePassphrase bool, writeBlsFilePath bo
 		passphraseStr = fmt.Sprintf(`, "passphrase": "%s"`, blsKey.Passphrase)
 	}
 	out := fmt.Sprintf(`
-{"one-address": "%s", "hex-address": "%s", "shard-id": %d, "public-key": "%s", "private-key": "%s", "encrypted-private-key": "%s"%s%s}`,
-		oneAddress, hexAddr.Hex(), blsKey.ShardId, blsKey.PublicKeyHex, blsKey.PrivateKeyHex, encryptedPrivateKeyStr, blsFileDesc, passphraseStr)
+{"hex-address": "%s", "shard-id": %d, "public-key": "%s", "private-key": "%s", "encrypted-private-key": "%s"%s%s}`,
+		hexAddr.Hex(), blsKey.ShardId, blsKey.PublicKeyHex, blsKey.PrivateKeyHex, encryptedPrivateKeyStr, blsFileDesc, passphraseStr)
 
 	return out, nil
 }

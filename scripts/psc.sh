@@ -11,7 +11,7 @@ Options:
    -d          download all the binaries
    -h          print this help
 Note: Arguments must be passed at the end for ./psc to work correctly.
-For instance: ./psc.sh balances <one-address> --node=https://s0.posichain.org/
+For instance: ./psc.sh balances <hex-address> --node=https://api.posichain.org/
 
 EOT
 }

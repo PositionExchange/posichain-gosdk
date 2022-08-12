@@ -6,7 +6,6 @@ import (
 	"path"
 	"strings"
 
-	"github.com/PositionExchange/posichain-gosdk/pkg/address"
 	"github.com/PositionExchange/posichain/accounts/keystore"
 	ethCommon "github.com/ethereum/go-ethereum/common"
 
@@ -35,7 +34,7 @@ func ListKeys(keystoreDir string) {
 	allAccounts := ks.Accounts()
 	fmt.Printf("Posichain Address:%s File URL:\n", strings.Repeat(" ", ethCommon.AddressLength*2))
 	for _, account := range allAccounts {
-		fmt.Printf("%s\t\t %s\n", address.ToBech32(account.Address), account.URL)
+		fmt.Printf("%s\t\t %s\n", account.Address.Hex(), account.URL)
 	}
 }
 
@@ -48,6 +47,6 @@ func AddNewKey(password string) {
 	if err != nil {
 		fmt.Printf("new account error: %v\n", err)
 	}
-	fmt.Printf("account: %s\n", address.ToBech32(account.Address))
+	fmt.Printf("account: %s\n", account.Address.Hex())
 	fmt.Printf("URL: %s\n", account.URL)
 }

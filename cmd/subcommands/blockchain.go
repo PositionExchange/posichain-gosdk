@@ -143,7 +143,7 @@ High level information about transaction, like blockNumber, blockHash
 		Use:     "current-nonce",
 		Short:   "Current nonce of an account",
 		Args:    cobra.ExactArgs(1),
-		Long:    `Current nonce number of a one-address`,
+		Long:    `Current nonce number of a address`,
 		PreRunE: validateAddress,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return request(rpc.Method.GetTransactionCount, []interface{}{addr.address})

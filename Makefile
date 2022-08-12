@@ -2,7 +2,7 @@ SHELL := /bin/bash
 version := $(shell git rev-list --count HEAD)
 commit := $(shell git describe --always --long --dirty)
 built_at := $(shell date +%FT%T%z)
-built_by := ${USER}@position.exchange
+built_by := ${USER}@posichain.org
 
 flags := -gcflags="all=-N -l -c 2"
 ldflags := -X main.version=v${version} -X main.commit=${commit}

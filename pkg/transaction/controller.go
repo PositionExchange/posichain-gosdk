@@ -182,7 +182,7 @@ func (C *Controller) setAmount(amount numeric.Dec) {
 	if !C.Behavior.OfflineSign {
 		balanceRPCReply, err := C.messenger.SendRPC(
 			rpc.Method.GetBalance,
-			p{address.ToBech32(C.sender.account.Address), "latest"},
+			p{C.sender.account.Address.Hex(), "latest"},
 		)
 		if err != nil {
 			C.executionError = err
@@ -211,7 +211,7 @@ func (C *Controller) setAmount(amount numeric.Dec) {
 
 func (C *Controller) setReceiver(receiver *string) {
 	if receiver != nil {
-		addr := address.Parse(*receiver)
+		addr := address.MustParse(*receiver)
 		C.transactionForRPC.params["receiver"] = &addr
 	}
 }
@@ -267,9 +267,10 @@ func (C *Controller) hardwareSignAndPrepareTxEncodedForSending() {
 		C.executionError = err
 		return
 	}
-	if strings.Compare(signerAddr, address.ToBech32(C.sender.account.Address)) != 0 {
+	if strings.Compare(signerAddr, C.sender.account.Address.Hex()) != 0 {
 		C.executionError = ErrBadTransactionParam
-		errorMsg := "signature verification failed : sender address doesn't match with ledger hardware addresss"
+		errorMsg := fmt.Sprintf("signature verification failed : sender address [%s] doesn't match with ledger hardware address [%s]",
+			C.sender.account.Address.Hex(), signerAddr)
 		C.transactionErrors = append(C.transactionErrors, &Error{
 			ErrMessage:           &errorMsg,
 			TimestampOfRejection: time.Now().Unix(),

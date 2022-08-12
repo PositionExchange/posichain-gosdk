@@ -31,7 +31,7 @@ func NewEthTransaction(
 // GetNextNonce returns the nonce on-chain (finalized transactions)
 func GetNextNonce(addr string, messenger rpc.T) uint64 {
 	transactionCountRPCReply, err :=
-		messenger.SendRPC(rpc.Method.GetTransactionCount, []interface{}{address.Parse(addr), "latest"})
+		messenger.SendRPC(rpc.Method.GetTransactionCount, []interface{}{address.MustParse(addr), "latest"})
 
 	if err != nil {
 		return 0
@@ -45,7 +45,7 @@ func GetNextNonce(addr string, messenger rpc.T) uint64 {
 // GetNextPendingNonce returns the nonce from the tx-pool (un-finalized transactions)
 func GetNextPendingNonce(addr string, messenger rpc.T) uint64 {
 	transactionCountRPCReply, err :=
-		messenger.SendRPC(rpc.Method.GetTransactionCount, []interface{}{address.Parse(addr), "pending"})
+		messenger.SendRPC(rpc.Method.GetTransactionCount, []interface{}{address.MustParse(addr), "pending"})
 
 	if err != nil {
 		return 0

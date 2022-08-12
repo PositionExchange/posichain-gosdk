@@ -1,9 +1,8 @@
 package cmd
 
 import (
-	"github.com/PositionExchange/posichain-gosdk/pkg/address"
 	"github.com/PositionExchange/posichain-gosdk/pkg/common"
-	"github.com/PositionExchange/posichain-gosdk/pkg/validation"
+	ethCommon "github.com/ethereum/go-ethereum/common"
 	"github.com/pkg/errors"
 )
 
@@ -16,20 +15,15 @@ func (oneAddress oneAddress) String() string {
 }
 
 func (oneAddress *oneAddress) Set(s string) error {
-	err := validation.ValidateAddress(s)
-	if err != nil {
-		return err
-	}
-	_, err = address.Bech32ToAddress(s)
-	if err != nil {
-		return errors.Wrap(err, "not a valid one address")
+	if !ethCommon.IsHexAddress(s) {
+		return errors.New("address is not in hex format")
 	}
 	oneAddress.address = s
 	return nil
 }
 
 func (oneAddress oneAddress) Type() string {
-	return "one-address"
+	return "address"
 }
 
 type chainIDWrapper struct {

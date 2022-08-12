@@ -49,7 +49,7 @@ func ethHandlerForTransaction(txLog *transactionLog) error {
 
 	var ctrlr *transaction.EthController
 	if useLedgerWallet {
-		account := accounts.Account{Address: address.Parse(from)}
+		account := accounts.Account{Address: address.MustParse(from)}
 		ctrlr = transaction.NewEthController(networkHandler, nil, &account, *chainName.chainID, ethOpts)
 	} else {
 		ks, acct, err := store.UnlockedKeystore(from, passphrase)
@@ -265,11 +265,11 @@ Create an Ethereum compatible transaction, sign it, and send off to the Posichai
 		},
 	}
 
-	cmdEthTransfer.Flags().Var(&fromAddress, "from", "sender's one address, keystore must exist locally")
-	cmdEthTransfer.Flags().Var(&toAddress, "to", "the destination one address")
+	cmdEthTransfer.Flags().Var(&fromAddress, "from", "sender's hex address, keystore must exist locally")
+	cmdEthTransfer.Flags().Var(&toAddress, "to", "the destination hex address")
 	cmdEthTransfer.Flags().BoolVar(&dryRun, "dry-run", false, "do not send signed transaction")
 	cmdEthTransfer.Flags().BoolVar(&trueNonce, "true-nonce", false, "send transaction with on-chain nonce")
-	cmdEthTransfer.Flags().StringVar(&amount, "amount", "0", "amount to send (ONE)")
+	cmdEthTransfer.Flags().StringVar(&amount, "amount", "0", "amount to send (POSI)")
 	cmdEthTransfer.Flags().StringVar(&gasPrice, "gas-price", "100", "gas price to pay (NANO)")
 	cmdEthTransfer.Flags().StringVar(&gasLimit, "gas-limit", "", "gas limit")
 	cmdEthTransfer.Flags().StringVar(&inputNonce, "nonce", "", "set nonce for tx")

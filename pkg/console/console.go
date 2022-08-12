@@ -742,7 +742,7 @@ func (b *bridge) HmySign(call jsre.Call) (goja.Value, error) {
 		return nil, fmt.Errorf("could not open local keystore for %s", addressStr)
 	}
 
-	acc, err := ks.Find(accounts.Account{Address: address.Parse(addressStr)})
+	acc, err := ks.Find(accounts.Account{Address: address.MustParse(addressStr)})
 	if err != nil {
 		return nil, err
 	}
