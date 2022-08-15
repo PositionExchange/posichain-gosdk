@@ -52,7 +52,7 @@ jobs:
         with:
           repository: PositionExchange/posichain
           path: go/src/github.com/PositionExchange/posichain
-          ref: develop TODO checkout main later
+          ref: develop # TODO checkout main later
           fetch-depth: 0
 
       - name: Get latest version and release
