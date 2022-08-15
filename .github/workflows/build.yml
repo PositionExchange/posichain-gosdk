@@ -97,7 +97,7 @@ jobs:
           go-version: 1.16.5
 
       - name: Checkout go-sdk code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: go/src/github.com/PositionExchange/posichain-gosdk
 
@@ -109,51 +109,45 @@ jobs:
           echo ${GOPATH}
           echo ${GOROOT}
         env:
-          GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
+          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
 
       - name: Checkout dependence repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: PositionExchange/mcl
           path: go/src/github.com/PositionExchange/mcl
-        env:
-          GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
 
       - name: Checkout dependence repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: PositionExchange/bls
           path: go/src/github.com/PositionExchange/bls
-        env:
-          GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
 
       - name: Checkout dependence code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: PositionExchange/posichain
           path: go/src/github.com/PositionExchange/posichain
-          ref: main
+          ref: develop # TODO change to main branch later
           fetch-depth: 0
-        env:
-          GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
 
-      - name: Build psc binary for Arm
+      - name: Build psc binary for ARM64
         run: |
           make static
           mv dist/psc dist/psc-arm64
           chmod +x dist/psc-arm64
-        working-directory: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go/src/github.com/PositionExchange/posichain-gosdk
+        working-directory: /home/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk
         env:
-          GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
+          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: psc-arm64
-          path: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go/src/github.com/PositionExchange/posichain-gosdk/dist/*
+          path: /home/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk/dist/*
           retention-days: 1
         env:
-          GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
+          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
 
   release-page:
     name: Sign binary and create and publish release page
