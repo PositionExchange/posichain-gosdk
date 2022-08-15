@@ -8,9 +8,6 @@ flags := -gcflags="all=-N -l -c 2"
 ldflags := -X main.version=v${version} -X main.commit=${commit}
 ldflags += -X main.builtAt=${built_at} -X main.builtBy=${built_by}
 cli := ./dist/psc
-upload-path-darwin := 's3://pub.harmony.one/release/darwin-x86_64/mainnet/psc'
-upload-path-linux := 's3://pub.harmony.one/release/linux-x86_64/mainnet/psc'
-upload-path-linux-version := 's3://pub.harmony.one/release/linux-x86_64/mainnet/psc_version'
 uname := $(shell uname)
 
 env := GO111MODULE=on
@@ -43,25 +40,7 @@ test-key:
 test-rpc:
 	go test ./pkg/rpc -cover -v
 
-# Notice assumes you have correct uploading credentials
-upload-darwin:all
-ifeq (${uname}, Darwin)
-	aws --profile upload s3 cp ./psc ${upload-path-darwin}
-else
-	@echo "Wrong operating system for target upload"
-endif
-
-# Only the linux build will upload the CLI version
-upload-linux:static
-ifeq (${uname}, Linux)
-	aws --profile upload s3 cp ./psc ${upload-path-linux}
-	./psc version &> ./psc_version
-	aws --profile upload s3 cp ./psc_version ${upload-path-linux-version}
-else
-	@echo "Wrong operating system for target upload"
-endif
-
-.PHONY:clean run-tests upload-darwin upload-linux
+.PHONY:clean run-tests
 
 clean:
 	@rm -f $(cli)
