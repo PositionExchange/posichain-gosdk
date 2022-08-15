@@ -15,7 +15,6 @@ jobs:
         os: [ ubuntu-18.04 ]
 
     steps:
-
       - name: Set up Go 1.16.5
         uses: actions/setup-go@v2
         with:
@@ -31,10 +30,7 @@ jobs:
           pwd
           echo ${HOME}
           echo ${GITHUB_WORKSPACE}
-          echo ${GOPATH}
           echo ${GOROOT}
-        env:
-          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
 
       - name: Checkout dependence repo (mcl)
         uses: actions/checkout@v3
@@ -63,8 +59,6 @@ jobs:
           echo "build_version=$VERSION" >> $GITHUB_ENV
           echo "build_release=$RELEASE" >> $GITHUB_ENV
         working-directory: /home/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk
-        env:
-          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
 
       - name: Build psc binary for Linux
         if: matrix.os == 'ubuntu-18.04'
@@ -80,82 +74,77 @@ jobs:
           name: psc
           path: /home/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk/dist/*
           retention-days: 1
-        env:
-          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
 
-  # build-arm64:
-  #   name: Build psc binary
-  #   runs-on: ${{ matrix.os }}
-  #   strategy:
-  #     matrix:
-  #       os: [ [ self-hosted,linux,ARM64 ] ]
-
-  #   steps:
-
-  #     - name: Set up Go 1.16.5
-  #       uses: actions/setup-go@v2
-  #       with:
-  #         go-version: 1.16.5
-
-
-  #     - name: Checkout go-sdk code
-  #       uses: actions/checkout@v2
-  #       with:
-  #         path: go/src/github.com/PositionExchange/posichain-gosdk
-
-  #     - name: Debug
-  #       run: |
-  #         pwd
-  #         echo ${HOME}
-  #         echo ${GITHUB_WORKSPACE}
-  #         echo ${GOPATH}
-  #         echo ${GOROOT}
-  #       env:
-  #         GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
-
-  #     - name: Checkout dependence repo
-  #       uses: actions/checkout@v2
-  #       with:
-  #         repository: PositionExchange/mcl
-  #         path: go/src/github.com/PositionExchange/mcl
-  #       env:
-  #         GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
-
-  #     - name: Checkout dependence repo
-  #       uses: actions/checkout@v2
-  #       with:
-  #         repository: PositionExchange/bls
-  #         path: go/src/github.com/PositionExchange/bls
-  #       env:
-  #         GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
-
-  #     - name: Checkout dependence code
-  #       uses: actions/checkout@v2
-  #       with:
-  #         repository: PositionExchange/posichain
-  #         path: go/src/github.com/PositionExchange/posichain
-  #         ref: main
-  #         fetch-depth: 0
-  #       env:
-  #         GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
-
-  #     - name: Build psc binary for Arm
-  #       run: |
-  #         make static
-  #         mv dist/psc dist/psc-arm64
-  #         chmod +x dist/psc-arm64
-  #       working-directory: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go/src/github.com/PositionExchange/posichain-gosdk
-  #       env:
-  #         GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
-
-  #     - name: Upload artifact
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: psc-arm64
-  #         path: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go/src/github.com/PositionExchange/posichain-gosdk/dist/*
-  #         retention-days: 1
-  #       env:
-  #         GOPATH: /home/ubuntu/actions-runner/_work/go-sdk/go-sdk/go
+#  build-arm64:
+#    name: Build psc binary for arm64
+#    runs-on: ${{ matrix.os }}
+#    strategy:
+#      matrix:
+#        os: [ macos-12 ]
+#
+#    steps:
+#
+#      - name: Set up Go 1.16.5
+#        uses: actions/setup-go@v2
+#        with:
+#          go-version: 1.16.5
+#
+#      - name: Checkout go-sdk code
+#        uses: actions/checkout@v3
+#        with:
+#          path: go/src/github.com/PositionExchange/posichain-gosdk
+#
+#      - name: Debug
+#        run: |
+#          pwd
+#          echo ${HOME}
+#          echo ${GITHUB_WORKSPACE}
+#          echo ${GOROOT}
+#
+#      - name: Checkout dependence repo (mcl)
+#        uses: actions/checkout@v3
+#        with:
+#          repository: PositionExchange/mcl
+#          path: go/src/github.com/PositionExchange/mcl
+#
+#      - name: Checkout dependence repo (bls)
+#        uses: actions/checkout@v3
+#        with:
+#          repository: PositionExchange/bls
+#          path: go/src/github.com/PositionExchange/bls
+#
+#      - name: Checkout dependence code (core)
+#        uses: actions/checkout@v3
+#        with:
+#          repository: PositionExchange/posichain
+#          path: go/src/github.com/PositionExchange/posichain
+#          ref: develop # TODO change to main branch later
+#          fetch-depth: 0
+#
+#      - name: Get latest version and release
+#        run: |
+#          VERSION=$(git tag -l --sort=-v:refname | head -n 1 | tr -d v)
+#          RELEASE=$(git describe --long | cut -f2 -d-)
+#          echo "build_version=$VERSION" >> $GITHUB_ENV
+#          echo "build_release=$RELEASE" >> $GITHUB_ENV
+#        working-directory: /Users/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk
+#
+#      - name: Build psc binary for ARM64
+#        if: matrix.os == 'macos-12'
+#        run: |
+#          make static
+#          mv dist/psc dist/psc-arm64
+#          chmod +x dist/psc-arm64
+#        working-directory: /Users/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk
+#        env:
+#          GOPATH: /Users/runner/work/posichain-gosdk/posichain-gosdk/go
+#
+#      - name: Upload artifact
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: psc-arm64
+#          path: /Users/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk/dist/*
+#          retention-days: 1
 
   release-page:
     name: Sign binary and create and publish release page
@@ -183,10 +172,8 @@ jobs:
           echo "build_version_long=$VERSION_LONG" >> $GITHUB_ENV
           echo "build_release=$RELEASE" >> $GITHUB_ENV
         working-directory: /home/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk
-        env:
-          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
 
-      - name: Download artifact
+      - name: Download amd64 artifact
         uses: actions/download-artifact@v2
         with:
           name: psc
@@ -196,17 +183,15 @@ jobs:
           gpg --detach-sign psc
           sha256sum psc >> psc.sha256
 
-      # - name: Download artifact
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: psc-arm64
-
-      # - name: Signed arm64 psc binary
-      #   run: |
-      #     gpg --detach-sign psc-arm64
-      #     sha256sum psc-arm64 >> psc-arm64.sha256
-
-
+#      - name: Download arm64 artifact
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: psc-arm64
+#
+#      - name: Signed arm64 psc binary
+#        run: |
+#          gpg --detach-sign psc-arm64
+#          sha256sum psc-arm64 >> psc-arm64.sha256
 
       - name: Get tag message
         env:
@@ -216,8 +201,6 @@ jobs:
           echo -e "$TAG_SHA\n\nThe released version: $build_version_long" >> ./tag_message.md
         working-directory: /home/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk
 
-
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -225,12 +208,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Mainnet Release ${{ env.build_version }}
+          release_name: PSC CLI Release ${{ env.build_version }}
           draft: true
           prerelease: false
           body_path: /home/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk/tag_message.md
-
-
 
       - name: Upload psc binary for Linux (amd64)
         uses: actions/upload-release-asset@v1
@@ -262,34 +243,32 @@ jobs:
           asset_name: psc.sig
           asset_content_type: application/octet-stream
 
-
-      # - name: Upload psc binary for ARM64
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./psc-arm64
-      #     asset_name: psc-arm64
-      #     asset_content_type: application/octet-stream
-
-      # - name: Upload sha256 signature of psc arm64 binary
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./psc-arm64.sha256
-      #     asset_name: psc-arm64.sha256
-      #     asset_content_type: text/plain
-
-      # - name: Upload gpg signature of psc arm64 binary
-      #   uses: actions/upload-release-asset@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-      #     asset_path: ./psc-arm64.sig
-      #     asset_name: psc-arm64.sig
-      #     asset_content_type: application/octet-stream
+#      - name: Upload psc binary for ARM64
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: ./psc-arm64
+#          asset_name: psc-arm64
+#          asset_content_type: application/octet-stream
+#
+#      - name: Upload sha256 signature of psc arm64 binary
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: ./psc-arm64.sha256
+#          asset_name: psc-arm64.sha256
+#          asset_content_type: text/plain
+#
+#      - name: Upload gpg signature of psc arm64 binary
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: ./psc-arm64.sig
+#          asset_name: psc-arm64.sig
+#          asset_content_type: application/octet-stream
