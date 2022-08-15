@@ -30,10 +30,7 @@ jobs:
           pwd
           echo ${HOME}
           echo ${GITHUB_WORKSPACE}
-          echo ${GOPATH}
           echo ${GOROOT}
-        env:
-          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
 
       - name: Checkout dependence repo (mcl)
         uses: actions/checkout@v3
@@ -62,8 +59,6 @@ jobs:
           echo "build_version=$VERSION" >> $GITHUB_ENV
           echo "build_release=$RELEASE" >> $GITHUB_ENV
         working-directory: /home/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk
-        env:
-          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
 
       - name: Build psc binary for Linux
         if: matrix.os == 'ubuntu-18.04'
@@ -79,8 +74,6 @@ jobs:
           name: psc
           path: /home/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk/dist/*
           retention-days: 1
-        env:
-          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
 
   build-arm64:
     name: Build psc binary for arm64
@@ -106,24 +99,21 @@ jobs:
           pwd
           echo ${HOME}
           echo ${GITHUB_WORKSPACE}
-          echo ${GOPATH}
           echo ${GOROOT}
-        env:
-          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
 
-      - name: Checkout dependence repo
+      - name: Checkout dependence repo (mcl)
         uses: actions/checkout@v3
         with:
           repository: PositionExchange/mcl
           path: go/src/github.com/PositionExchange/mcl
 
-      - name: Checkout dependence repo
+      - name: Checkout dependence repo (bls)
         uses: actions/checkout@v3
         with:
           repository: PositionExchange/bls
           path: go/src/github.com/PositionExchange/bls
 
-      - name: Checkout dependence code
+      - name: Checkout dependence code (core)
         uses: actions/checkout@v3
         with:
           repository: PositionExchange/posichain
@@ -131,23 +121,30 @@ jobs:
           ref: develop # TODO change to main branch later
           fetch-depth: 0
 
+      - name: Get latest version and release
+        run: |
+          VERSION=$(git tag -l --sort=-v:refname | head -n 1 | tr -d v)
+          RELEASE=$(git describe --long | cut -f2 -d-)
+          echo "build_version=$VERSION" >> $GITHUB_ENV
+          echo "build_release=$RELEASE" >> $GITHUB_ENV
+        working-directory: /Users/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk
+
       - name: Build psc binary for ARM64
+        if: matrix.os == 'macos-12'
         run: |
           make static
           mv dist/psc dist/psc-arm64
           chmod +x dist/psc-arm64
-        working-directory: /home/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk
+        working-directory: /Users/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk
         env:
-          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
+          GOPATH: /Users/runner/work/posichain-gosdk/posichain-gosdk/go
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
           name: psc-arm64
-          path: /home/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk/dist/*
+          path: /Users/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk/dist/*
           retention-days: 1
-        env:
-          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
 
   release-page:
     name: Sign binary and create and publish release page
@@ -175,8 +172,6 @@ jobs:
           echo "build_version_long=$VERSION_LONG" >> $GITHUB_ENV
           echo "build_release=$RELEASE" >> $GITHUB_ENV
         working-directory: /home/runner/work/posichain-gosdk/posichain-gosdk/go/src/github.com/PositionExchange/posichain-gosdk
-        env:
-          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
 
       - name: Download amd64 artifact
         uses: actions/download-artifact@v2
@@ -188,7 +183,7 @@ jobs:
           gpg --detach-sign psc
           sha256sum psc >> psc.sha256
 
-      - name: Download arm artifact
+      - name: Download arm64 artifact
         uses: actions/download-artifact@v2
         with:
           name: psc-arm64
@@ -252,7 +247,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GOPATH: /home/runner/work/posichain-gosdk/posichain-gosdk/go
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./psc-arm64
