@@ -18,6 +18,7 @@ type chainIDList struct {
 	TestNet   ChainID `json:"testnet"`
 	DevNet    ChainID `json:"devnet"`
 	StressNet ChainID `json:"stress"`
+	DockerNet ChainID `json:"dockernet"`
 }
 
 // Chain is an enumeration of the known Chain-IDs
@@ -26,6 +27,7 @@ var Chain = chainIDList{
 	TestNet:   ChainID{"testnet", big.NewInt(2)},
 	DevNet:    ChainID{"devnet", big.NewInt(3)},
 	StressNet: ChainID{"stress", big.NewInt(5)},
+	DockerNet: ChainID{"dockernet", big.NewInt(8)},
 }
 
 func (c chainIDList) String() string {
@@ -42,6 +44,8 @@ func StringToChainID(name string) (*ChainID, error) {
 		return &Chain.TestNet, nil
 	case "devnet":
 		return &Chain.DevNet, nil
+	case "dockernet":
+		return &Chain.DockerNet, nil
 	case "stressnet":
 		return &Chain.StressNet, nil
 	case "dryrun":
