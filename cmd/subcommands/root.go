@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"regexp"
 	"strings"
 
 	"github.com/PositionExchange/posichain-gosdk/pkg/common"
@@ -14,7 +13,7 @@ import (
 	rpcV1 "github.com/PositionExchange/posichain-gosdk/pkg/rpc/v1"
 	"github.com/PositionExchange/posichain-gosdk/pkg/sharding"
 	"github.com/PositionExchange/posichain-gosdk/pkg/store"
-	color "github.com/fatih/color"
+	"github.com/fatih/color"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/cobra/doc"
@@ -27,9 +26,7 @@ var (
 	noPrettyOutput  bool
 	node            string
 	rpcPrefix       string
-	keyStoreDir     string
 	givenFilePath   string
-	endpoint        = regexp.MustCompile(`https://api\.s\d\..*\.posichain\.org`)
 	request         = func(method string, params []interface{}) error {
 		if !noLatest {
 			params = append(params, "latest")
@@ -74,17 +71,14 @@ var (
 				if node == defaultNodeAddr {
 					routes, err := sharding.Structure(node)
 					if err != nil {
-						chainName = chainIDWrapper{chainID: &common.Chain.TestNet}
-					} else {
-						if len(routes) == 0 {
-							return errors.New("empty reply from sharding structure")
-						}
-						chainName = endpointToChainID(routes[0].HTTP)
+						return errors.WithMessage(err, "get sharding structure error")
 					}
-				} else if endpoint.Match([]byte(node)) {
-					chainName = endpointToChainID(node)
+					if len(routes) == 0 {
+						return errors.New("empty reply from sharding structure")
+					}
+					chainName = endpointToChainID(routes[0].HTTP)
 				} else {
-					chainName = chainIDWrapper{chainID: &common.Chain.TestNet}
+					chainName = endpointToChainID(node)
 				}
 			} else {
 				chain, err := common.StringToChainID(targetChain)
@@ -177,6 +171,8 @@ func endpointToChainID(nodeAddr string) chainIDWrapper {
 		return chainIDWrapper{chainID: &common.Chain.TestNet}
 	} else if strings.Contains(nodeAddr, ".d.") {
 		return chainIDWrapper{chainID: &common.Chain.DevNet}
+	} else if strings.Contains(nodeAddr, ".k.") {
+		return chainIDWrapper{chainID: &common.Chain.DockerNet}
 	} else if strings.Contains(nodeAddr, ".s.") {
 		return chainIDWrapper{chainID: &common.Chain.StressNet}
 	}
