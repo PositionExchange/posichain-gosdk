@@ -71,12 +71,13 @@ var (
 				if node == defaultNodeAddr {
 					routes, err := sharding.Structure(node)
 					if err != nil {
-						return errors.WithMessage(err, "get sharding structure error")
+						chainName = chainIDWrapper{chainID: &common.Chain.MainNet}
+					} else {
+						if len(routes) == 0 {
+							return errors.New("empty reply from sharding structure")
+						}
+						chainName = endpointToChainID(routes[0].HTTP)
 					}
-					if len(routes) == 0 {
-						return errors.New("empty reply from sharding structure")
-					}
-					chainName = endpointToChainID(routes[0].HTTP)
 				} else {
 					chainName = endpointToChainID(node)
 				}
