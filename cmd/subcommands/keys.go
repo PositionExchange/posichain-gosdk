@@ -31,6 +31,7 @@ const (
 )
 
 var (
+	interactiveImport      bool
 	quietImport            bool
 	recoverFromMnemonic    bool
 	userProvidesPassphrase bool
@@ -260,19 +261,41 @@ func keysSub() []*cobra.Command {
 	cmdImportKS.Flags().BoolVar(&quietImport, "quiet", false, "do not print out imported account name")
 
 	cmdImportPK := &cobra.Command{
-		Use:   "import-private-key <secp256k1_PRIVATE_KEY> [ACCOUNT_NAME]",
+		Use:   "import-private-key --interactive=false <secp256k1_PRIVATE_KEY> [ACCOUNT_NAME]",
 		Short: "Import an existing keystore key (only accept secp256k1 private keys)",
-		Args:  cobra.RangeArgs(1, 2),
+		Args:  cobra.RangeArgs(0, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			userName := ""
-			if len(args) == 2 {
-				userName = args[1]
+			var privateKey, userName string
+			if interactiveImport {
+				fmt.Println("Enter secp256k1 private key:")
+				privateKeyBytes, err := terminal.ReadPassword(int(os.Stdin.Fd()))
+				if err != nil {
+					return err
+				}
+				privateKey = string(privateKeyBytes)
+
+				reader := bufio.NewReader(os.Stdin)
+				fmt.Println("Enter account name:")
+				userName, _ = reader.ReadString('\n')
+				if err != nil {
+					return err
+				}
+			} else {
+				if len(args) == 0 {
+					return errors.New("please add private key in the first argument")
+				}
+				privateKey = args[0]
+				if len(args) == 2 {
+					userName = args[1]
+				}
 			}
+			privateKey = strings.TrimSpace(privateKey)
+			userName = strings.TrimSpace(userName)
 			passphrase, err := getPassphrase()
 			if err != nil {
 				return err
 			}
-			name, err := account.ImportFromPrivateKey(args[0], userName, passphrase)
+			name, err := account.ImportFromPrivateKey(privateKey, userName, passphrase)
 			if !quietImport && err == nil {
 				fmt.Printf("Imported keystore given account alias of `%s`\n", name)
 				addr, _ := store.AddressFromAccountName(name)
@@ -282,6 +305,7 @@ func keysSub() []*cobra.Command {
 		},
 	}
 	cmdImportPK.Flags().BoolVar(&userProvidesPassphrase, "passphrase", false, ppPrompt)
+	cmdImportPK.Flags().BoolVar(&interactiveImport, "interactive", true, "import in interactive mode")
 	cmdImportPK.Flags().BoolVar(&quietImport, "quiet", false, "do not print out imported account name")
 
 	cmdExportPK := &cobra.Command{
