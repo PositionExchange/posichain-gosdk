@@ -35,7 +35,7 @@ Support interaction with the Harmony governance app, especially for validators t
 		commandVote(),
 	}...)
 
-	RootCmd.AddCommand(cmdGovernance)
+	//RootCmd.AddCommand(cmdGovernance)
 }
 
 func commandListProposal() (cmd *cobra.Command) {

@@ -78,7 +78,7 @@ Check README for details on json file format.
 ./psc keys import-ks <PATH_TO_KEYSTORE_JSON>
 
 9.  Import a keystore file using a secp256k1 private key
-./psc keys import-private-key <secp256k1_PRIVATE_KEY>
+./psc keys import-private-key --interactive=false <secp256k1_PRIVATE_KEY>
 
 10. Export a keystore file's secp256k1 private key
 ./psc keys export-private-key <ACCOUNT_ADDRESS> --passphrase
@@ -125,36 +125,8 @@ Check README for details on json file format.
 20. Check which shard your BLS public key would be assigned to as a validator
 ./psc --node=https://api.posichain.org utility shard-for-bls <BLS_PUBLIC_KEY>
 
-21. List Space In Governance
-./psc governance list-space
-
-22. List Proposal In Space Of Governance
-./psc governance list-proposal --space=[space key, example: staking-testnet]
-
-23. View Proposal In Governance
-./psc governance view-proposal --proposal=[proposal hash]
-
-24. New Proposal In Space Of Governance
-./psc governance new-proposal --proposal-yaml=[file path] --key=[account address]
-PS: key must first use (psc keys import-private-key) to import
-Yaml example(time is in UTC timezone):
-space: staking-testnet
-start: 2020-04-16 21:45:12
-end: 2020-04-21 21:45:12
-choices:
-  - yes
-  - no
-title: this is title
-body: |
-  this is body,
-  you can write mutli line
-
-25. Vote Proposal In Space Of Governance
-./psc governance vote-proposal --proposal=[proposal hash] --choice=[your choise text, eg: yes] --key=[account address]
-PS: key must first use (psc keys import-private-key) to import
-
-26. Enter Console
-./psc command --net=testnet --shard=0
+21. Enter Console
+./psc command --net=testnet
 ```
 
 # Sending batched transactions
