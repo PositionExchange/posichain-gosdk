@@ -57,7 +57,7 @@ Check README for details on json file format.
 ./psc keys import-ks <PATH_TO_KEYSTORE_JSON>
 
 %s
-./psc keys import-private-key <secp256k1_PRIVATE_KEY>
+./psc keys import-private-key --interactive=false <secp256k1_PRIVATE_KEY>
 
 %s
 ./psc keys export-private-key <ACCOUNT_ADDRESS> --passphrase
@@ -105,32 +105,7 @@ Check README for details on json file format.
 ./psc --node=[NODE] utility shard-for-bls <BLS_PUBLIC_KEY>
 
 %s
-./psc governance list-space
-
-%s
-./psc governance list-proposal --space=[space key, example: staking-testnet]
-
-%s
-./psc governance view-proposal --proposal=[proposal hash]
-
-%s
-./psc governance new-proposal --proposal-yaml=[file path] --key=[account address]
-PS: key must first use (psc keys import-private-key) to import
-Yaml example(time is in UTC timezone):
-space: staking-testnet
-start: 2020-04-16 21:45:12
-end: 2020-04-21 21:45:12
-choices:
-  - yes
-  - no
-title: this is title
-body: |
-  this is body,
-  you can write mutli line
-
-%s
-./psc governance vote-proposal --proposal=[proposal hash] --choice=[your choise text, eg: yes] --key=[account address]
-PS: key must first use (psc keys import-private-key) to import
+./psc command --net=testnet
 `,
 		g("1.  Check account balance on given chain"),
 		g("2.  Check sent transaction"),
@@ -152,10 +127,6 @@ PS: key must first use (psc keys import-private-key) to import
 		g("18. Get current staking utility metrics"),
 		g("19. Check in-memory record of failed staking transactions"),
 		g("20. Check which shard your BLS public key would be assigned to as a validator"),
-		g("21. List Space In Governance"),
-		g("22. List Proposal In Space Of Governance"),
-		g("23. View Proposal In Governance"),
-		g("24. New Proposal In Space Of Governance"),
-		g("25. Vote Proposal In Space Of Governance"),
+		g("21. Enter Console"),
 	)
 )
